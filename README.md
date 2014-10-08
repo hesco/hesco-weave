@@ -1,10 +1,32 @@
+# weave 
+
+#### Table of Contents
+
+1. [Name](#name)
+2. [Version](#version)
+3. [Synopsis](#synopsis)
+4. [Installation - The basics of getting started with weave](#installation)
+    * [What weave affects](#what-weave-affects)
+    * [Setup requirements](#setup-requirements)
+    * [Beginning with weave](#beginning-with-weave)
+5. [Usage - Configuration options and additional functionality](#usage)
+    * [Organizing role::docker_host](#organizing-the-docker_host-role)
+    * [Setting up hiera data](#setting-up-hiera)
+    * [Use weave::run to configure containers](#use-weave-run-to-configure-containers)
+6. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+7. [Limitations - OS compatibility, etc.](#limitations)
+8. [Development - Guide for contributing to the module](#development)
+9. [To-Do](#to-do)
+10. [Contributions](#contributions)
+11. [Copyright and License](#copyright-and-license)
+
 # NAME
 
 hesco-weave -- puppet module for deploying and managing a docker network with weave
 
 # VERSION
 
-Version v0.03
+Version v0.04
 
 This is alpha code and no promises are made at this early stage as to the stability 
 of its interface, or its suitability for production use.  The weave project is still 
@@ -39,6 +61,8 @@ and uninstall of weave, its docker hosted router and packaged dependencies.
 
 # USAGE
 
+## Organizing the docker_host role
+
 In my docker_host role class, I have this:
 
     class role::docker_host {
@@ -67,6 +91,8 @@ module and perhaps elsewhere in my internal codebase.
     
     }
 
+## setting up hiera
+
 Including the hesco/weave module in role::docker_host, along with the following hiera 
 settings, handles the installation (and uninstall) of the zettio/weave script and its 
 supporting docker image, used to build a docker container hosting an SDN router.  
@@ -84,6 +110,8 @@ my /etc/puppet/hieradata/nodes/docker_host_01.example.com.yaml --
 
     docker::param::version: '1.2.0'
     weave::docker_host_weave_ip: '10.0.0.1/16'
+
+## use weave::run type to configure containers
 
 Finally, my "docker_cluster::hosts::${fqdn_normalized}" profile includes 
 classes which look like this:
@@ -112,6 +140,9 @@ classes which look like this:
  
 # TO-DO
 
+I want to permit the weave::docker_cluster_peers key to accept either a space 
+delimited string or a yaml array, and have it do the right thing either way.   
+
 In the long term, these configurations will as well be used to create a hash of 
 hashes stored in the hiera.yaml files, and the weave::run will be handed that 
 data structure to process.  
@@ -132,7 +163,7 @@ Please report bugs, feature requests and other issues at the [github site](../..
 fork this code, add your test cases, patch it and send me back a Pull Request.  Lets 
 see if working together we can turn this into something useful.  
 
-```COPYRIGHT AND LICENSE```
+# COPYRIGHT AND LICENSE
 
 Copyright 2014 Hugh Esco <hesco@campaignfoundations.com>
 YMD Partners LLC dba/ [CampaignFoundations.com](http://CampaignFoundations.com)
