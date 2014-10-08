@@ -8,6 +8,7 @@ license 'GPLv2'
 project_page 'https://github.com/hesco/hesco-weave'
 dependency 'garethr/docker', '>= 1.2.2'
 dependency 'puppetlabs/stdlib', '>= 4.3.2'
+dependency 'puppetlabs/firewall', '>= 1.1.3'
 
 # although this module may work with erlier versions of its dependencies, 
 # that has not been tested yet.  
