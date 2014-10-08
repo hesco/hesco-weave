@@ -12,12 +12,11 @@
     * [Organizing role::docker_host](#organizing-the-docker_host-role)
     * [Setting up hiera data](#setting-up-hiera)
     * [Use weave::run to configure containers](#use-weave-run-to-configure-containers)
-6. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+6. [Reference - An under-the-hood peek at what the module is doing and how](#reference) # PENDING
 7. [Limitations - OS compatibility, etc.](#limitations)
 8. [Development - Guide for contributing to the module](#development)
 9. [To-Do](#to-do)
-10. [Contributions](#contributions)
-11. [Copyright and License](#copyright-and-license)
+10. [Copyright and License](#copyright-and-license)
 
 # NAME
 
@@ -173,6 +172,18 @@ classes which look like this:
      
     }
  
+# LIMITATIONS
+
+So far this has only been tested on Debian, jessie/testing.  Reports of your experiences 
+with this code in other environments are appreciated, particularly when they include tests 
+and patches, particularly when they come in the form of a Pull Request.  
+
+# DEVELOPMENT 
+
+Please report bugs, feature requests and other issues at the [github site](../../issues), 
+fork this code, add your test cases, patch it and send me back a Pull Request.  Lets 
+see if working together we can turn this into something useful.  
+
 # TO-DO
 
 I want to permit the weave::docker_cluster_peers key to accept either a space 
@@ -191,12 +202,6 @@ from which the image used by weave::run can be launched with its additional ethw
 connected interface, created by weave.  In the mean time, I am handling that step manually 
 with a Dockerfile and a wrapper bash script to drive it.  Those are all in my repository 
 and deployed by: my_docker::helper_scripts.  
-
-# CONTRIBUTIONS
-
-Please report bugs, feature requests and other issues at the [github site](../../issues), 
-fork this code, add your test cases, patch it and send me back a Pull Request.  Lets 
-see if working together we can turn this into something useful.  
 
 # COPYRIGHT AND LICENSE
 
