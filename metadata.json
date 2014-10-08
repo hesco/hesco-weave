@@ -1,0 +1,21 @@
+{
+  "name": "hesco-weave",
+  "version": "0.0.4",
+  "author": "Hugh Esco <hesco@yourmessagedelivered.com>",
+  "summary": "puppet module for deploying and managing a docker network with weave",
+  "license": "GPLv2",
+  "source": "https://github.com/hesco/hesco-weave",
+  "project_page": "https://github.com/hesco/hesco-weave",
+  "issues_url": "https://github.com/hesco/hesco-weave/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_range": ">= 1.0.0"
+    },
+    {
+      "name": "garethr-docker",
+      "version_range": ">= 1.2.2"
+    }
+  ]
+}
+
