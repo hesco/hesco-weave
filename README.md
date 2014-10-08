@@ -119,15 +119,16 @@ data structure to process.
 An additional weave::migrate type is required to facilitate migrating a docker container 
 from one docker host to another.  
 
-In my mind, the garethr/docker module needs an additional defined type, docker::build, 
-to handle the initial build of a docker container, from which the image used by weave::run 
-can be launched with its additional ethwe bridge connected interface, created by weave.  
-In the mean time, I am handling that step manually with a Dockerfile and a wrapper bash 
-script to drive it.  Those are all in my repository and deployed by: my_docker::helper_scripts.  
+In my mind, the [garethr/docker module](https://github.com/garethr/garethr-docker) needs 
+an additional defined type, docker::build, to handle the initial build of a docker container, 
+from which the image used by weave::run can be launched with its additional ethwe bridge 
+connected interface, created by weave.  In the mean time, I am handling that step manually 
+with a Dockerfile and a wrapper bash script to drive it.  Those are all in my repository 
+and deployed by: my_docker::helper_scripts.  
 
 # CONTRIBUTIONS
 
-Please report bugs, feature requests and other issues at the [github site](/issues), 
+Please report bugs, feature requests and other issues at the [github site](../../issues), 
 fork this code, add your test cases, patch it and send me back a Pull Request.  Lets 
 see if working together we can turn this into something useful.  
 
