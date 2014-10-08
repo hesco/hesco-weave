@@ -1,10 +1,10 @@
-```NAME```
+# NAME
 
-hesco-puppet
+hesco-weave -- puppet module for deploying and managing a docker network with weave
 
-```VERSION```
+# VERSION
 
-Version v0.02
+Version v0.03
 
 This is alpha code and no promises are made at this early stage as to the stability 
 of its interface, or its suitability for production use.  The weave project is still 
@@ -15,17 +15,17 @@ docker hosts.  But getting it to work in my environment has alrady demanded that
 I dig in to its innards and learn more about software defined networks than I knew 
 before.  
 
-```SYNOPSIS```
+# SYNOPSIS
 
 Puppet module for managing a weave network on a docker cluster
 
 Weave is a docker container hosted SDN router plus a shell script for managing an SDN 
 on a docker cluster.  It is capable of bridging virtual networks across docker hosts, 
 making it possible for containers deployed across different physical hosts to communicate 
-with one another.  To learn more about weave, see:  https://github.com/zettio/weave
+with one another.  To learn more about [weave, click here](https://github.com/zettio/weave).
 
 Architecturally, to make this work, one will want to use docker to deploy a weave router 
-using the zettio/weave image from <a href="https://registry.hub.docker.com/u/zettio/weave/">the Docker hub</a>, 
+using the [zettio/weave image from the Docker Hub](https://registry.hub.docker.com/u/zettio/weave/), 
 on each docker host, by using the weave script to `weave launch` it.  The script will create 
 a private bridge and establish peer relationships between multiple docker hosts.  
 
@@ -37,7 +37,7 @@ This puppet module exposes at this early stage of its development two defined ty
 and weave::run to make these tools available from a puppet manifest.  It also manages the installation 
 and uninstall of weave, its docker hosted router and packaged dependencies.  
 
-```USAGE```
+# USAGE
 
 In my docker_host role class, I have this:
 
@@ -110,24 +110,31 @@ classes which look like this:
      
     }
  
+# TO-DO
+
+In the long term, these configurations will as well be used to create a hash of 
+hashes stored in the hiera.yaml files, and the weave::run will be handed that 
+data structure to process.  
+
+An additional weave::migrate type is required to facilitate migrating a docker container 
+from one docker host to another.  
+
 In my mind, the garethr/docker module needs an additional defined type, docker::build, 
-to hanlde the initial build of a docker container, from which the image used by weave::run 
-can be launched with its additional ethwe weave bridge connected interface.  In the mean time, 
-I am handling that step manually with a Dockerfile and a wrapper bash script to drive it.  
-Those are all in my repository and deployed by: my_docker::helper_scripts.  
+to handle the initial build of a docker container, from which the image used by weave::run 
+can be launched with its additional ethwe bridge connected interface, created by weave.  
+In the mean time, I am handling that step manually with a Dockerfile and a wrapper bash 
+script to drive it.  Those are all in my repository and deployed by: my_docker::helper_scripts.  
 
-```CONTRIBUTIONS```
+# CONTRIBUTIONS
 
-Please report bugs, feature requests and other issues at the 
-<a href="https://github.com/hesco/hesco-weave">github site</a>, 
-fork this code, add your test cases, patch it and send me back 
-a Pull Request.  Lets see if working together we can turn this 
-into something useful.  
+Please report bugs, feature requests and other issues at the [github site](/issues), 
+fork this code, add your test cases, patch it and send me back a Pull Request.  Lets 
+see if working together we can turn this into something useful.  
 
 ```COPYRIGHT AND LICENSE```
 
-Copyright Hugh Esco <hesco@campaignfoundations.com>
+Copyright 2014 Hugh Esco <hesco@campaignfoundations.com>
+YMD Partners LLC dba/ [CampaignFoundations.com](http://CampaignFoundations.com)
 
 Released under the Gnu Public License.
-
 
