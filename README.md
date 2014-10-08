@@ -6,9 +6,8 @@
 2. [Version](#version)
 3. [Synopsis](#synopsis)
 4. [Installation - The basics of getting started with weave](#installation)
-    * [What weave affects](#what-weave-affects)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with weave](#beginning-with-weave)
+    * [What weave affects](#what-weave-affects)
 5. [Usage - Configuration options and additional functionality](#usage)
     * [Organizing role::docker_host](#organizing-the-docker_host-role)
     * [Setting up hiera data](#setting-up-hiera)
@@ -71,10 +70,29 @@ like so:
 
     # puppet module install -i /etc/puppet/modules hesco/weave
 
-Until that time, dependencies must be managed manually.  This module requires: 
+# Setup Requirements
+
+Until this is published to the forge, dependencies must be managed manually.  This module requires: 
 
     * [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
+    * [firewall](https://forge.puppetlabs.com/puppetlabs/firewall)
     * [garethr/docker](https://forge.puppetlabs.com/garethr/docker)
+
+## What weave affects
+
+weave::install -- 
+installs packages for ethtool and conntrack 
+deploys a pinned version of /usr/local/bin/weave
+Read the source for instructions on upgrading the weave script
+
+weave::launch -- 
+will run docker pull zettio/weave
+use the weave script to launch a weave router as a docker container 
+set up a weave bridge and associated network interfaces 
+
+weave::run -- 
+invokes docker run to deploy a docker container from an image
+creates weave interfaces, uses them to attach a container to the weave bridge
 
 # USAGE
 
