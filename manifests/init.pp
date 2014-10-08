@@ -11,6 +11,10 @@ class weave (
 
 ) inherits weave::params {
 
+  include stdlib
+  include firewall
+  include docker
+
   validate_absolute_path( $weave )
   validate_absolute_path( $docker )
   validate_string( $weave_image )
