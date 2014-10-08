@@ -1,11 +1,12 @@
 
-define weave::run ( $ip, $image $options ){ "":
+define weave::run ( $ip, $image, $options ){
 
-  $weave = '/usr/local/bin/weave'
+  $docker = hiera('ymd_docker::network::weave::docker', '/usr/bin/docker')
+  $weave = hiera('ymd_docker::network::weave::script', '/usr/local/bin/weave')
 
   exec { "weave run $ip $image":
     command => "$weave run $ip $options $image",
-     unless => "/usr/bin/docker inspect -f "{{ .Image }}" $image 2>&1 | /bin/grep -v ^Error -q",
+     unless => "$docker inspect -f '{{ .Image }}' $image 2>&1 | /bin/grep -v '^Error\|<no value>' -q ",
     timeout => 600,
   }
 
