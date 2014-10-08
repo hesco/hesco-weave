@@ -1,8 +1,8 @@
 
 define weave::run ( $ip, $image, $options ){
 
-  $docker = hiera('ymd_docker::network::weave::docker', '/usr/bin/docker')
-  $weave = hiera('ymd_docker::network::weave::script', '/usr/local/bin/weave')
+  $docker = hiera('weave::docker', '/usr/bin/docker')
+  $weave = hiera('weave::script', '/usr/local/bin/weave')
 
   validate_absolute_path( $weave )
   validate_absolute_path( $docker )
