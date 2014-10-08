@@ -37,6 +37,23 @@ This puppet module exposes at this early stage of its development two defined ty
 and weave::run to make these tools available from a puppet manifest.  It also manages the installation 
 and uninstall of weave, its docker hosted router and packaged dependencies.  
 
+# INSTALLATION
+
+For the time being, this module may be installed like so:
+
+    # cd /etc/puppet/modules
+    # git clone https://github.com/hesco/hesco-weave.git 
+
+Soon enough, this module will be posted to the puppet forge where it can be installed using puppet, 
+like so:
+
+    # puppet module install -i /etc/puppet/modules hesco/weave
+
+Until that time, dependencies must be managed manually.  This module requires: 
+
+    * [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
+    * [garethr/docker](https://forge.puppetlabs.com/garethr/docker)
+
 # USAGE
 
 In my docker_host role class, I have this:
