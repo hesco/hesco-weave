@@ -64,17 +64,19 @@ For the time being, this module may be installed like so:
     # cd /etc/puppet/modules
     # git clone https://github.com/hesco/hesco-weave.git 
 
-Soon enough, this module will be posted to the puppet forge where it can be installed using puppet, 
-like so:
+Now that this module has been published to the puppet forge](https://forge.puppetlabs.com/hesco/weave), 
+it can be installed using puppet, like so:
 
     # puppet module install -i /etc/puppet/modules hesco/weave
+
+Read `puppet help module install` for other useful options.  
 
 # Setup Requirements
 
 Until this is published to the forge, dependencies must be managed manually.  This module requires: 
 
-    * [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
-    * [firewall](https://forge.puppetlabs.com/puppetlabs/firewall)
+    * [puppetlabs/stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
+    * [puppetlabs/firewall](https://forge.puppetlabs.com/puppetlabs/firewall)
     * [garethr/docker](https://forge.puppetlabs.com/garethr/docker)
 
 ## What weave affects
@@ -85,12 +87,13 @@ deploys a pinned version of /usr/local/bin/weave
 Read the source for instructions on upgrading the weave script
 
 weave::launch -- 
-will run docker pull zettio/weave
+will run docker pull the zettio/weave docker image
 use the weave script to launch a weave router as a docker container 
 set up a weave bridge and associated network interfaces 
+reset and restart the weave container if it crashes
 
 weave::run -- 
-invokes docker run to deploy a docker container from an image
+invokes `weave run` which wraps `docker run` to deploy a docker container from an image
 creates weave interfaces, uses them to attach a container to the weave bridge
 
 # USAGE
@@ -110,7 +113,7 @@ In my docker_host role class, I have this:
     }
 
 In actuality those four lines probably ought to be broken out into their own 
-puppet profile.  
+'docker-weave' puppet profile.  
 
 The my_docker module uses the garethr/docker module to install docker.  
 The garethr module also exposes a couple of defined types used in the weave 
@@ -176,7 +179,8 @@ classes which look like this:
 
 So far this has only been tested on Debian, jessie/testing.  Reports of your experiences 
 with this code in other environments are appreciated, particularly when they include tests 
-and patches, particularly when they come in the form of a Pull Request.  
+and patches, particularly when they come in the form of a Pull Request, even if only to 
+patch this README.md to report on success or failure of this module in your environment.  
 
 # DEVELOPMENT 
 
