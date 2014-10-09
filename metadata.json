@@ -1,6 +1,6 @@
 {
   "name": "hesco-weave",
-  "version": "0.4.4",
+  "version": "0.4.6",
   "author": "Hugh Esco <hesco@yourmessagedelivered.com>",
   "summary": "puppet module for deploying and managing a docker network with weave",
   "license": "GPLv2",
