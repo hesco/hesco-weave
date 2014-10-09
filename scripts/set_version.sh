@@ -4,7 +4,7 @@ LEGACY_VERSION=`/bin/grep ^VERSION README.md | /bin/sed "s,^VERSION ,,"`
 
 function v_version() {
   local VVERSION=$(/usr/bin/git describe --tags | /bin/sed "s,-,.," | /bin/sed "s,-.*$,,")
-  /bin/sed -i "s,^Version .*$,VERSION $VVERSION," README.md
+  /bin/sed -i "s,^Version .*$,Version $VVERSION," README.md
   /bin/echo "$VVERSION"
 }
 
@@ -22,14 +22,7 @@ then
 fi
 
 VVERSION=$(v_version)
-# /bin/echo $VVERSION
 VERSION=$(version)
-# /bin/echo $VERSION
-
-# VVERSION=$(/usr/bin/git describe --tags | /bin/sed "s,-,.," | /bin/sed "s,-.*$,,")
-# /bin/sed -i "s,^Version .*$,VERSION $VVERSION," README.md
-# VERSION=`/bin/echo $VVERSION | /bin/sed "s,^v,,"`
-# /bin/sed -i "s,^  \"version.*$,  \"version\": \"$VERSION\"\,," metadata.json 
 
 if [ "$LEGACY_VERSION" != "$VVERSION" ]
 then
@@ -40,8 +33,8 @@ then
   if [[ $commit_incremented_version == 'yes' ]]
   then
     /usr/bin/git commit metadata.json README.md -m"make release used to update version to $VVERSION "
-    VVERSION=v_version
-    VERSION=version
+    VVERSION=$(v_version)
+    VERSION=$(version)
     /usr/bin/git commit --amend metadata.json README.md -m"make release used to update version to $VVERSION "
     exit 0
   else
