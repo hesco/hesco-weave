@@ -1,16 +1,35 @@
 #!/bin/bash
 
 LEGACY_VERSION=`/bin/grep ^VERSION README.md | /bin/sed "s,^VERSION ,,"`
-# (/usr/bin/test `/usr/bin/git diff README.md metadata.json | wc -l` -eq 0) || (/bin/echo 'Commit or stash outstanding changes to metadata.json and README before release' && exit 1)
+
+function v_version() {
+  local VVERSION=$(/usr/bin/git describe --tags | /bin/sed "s,-,.," | /bin/sed "s,-.*$,,")
+  /bin/sed -i "s,^Version .*$,VERSION $VVERSION," README.md
+  /bin/echo "$VVERSION"
+}
+
+function version() {
+  local VVERSION=$(v_version)
+  local VERSION=`/bin/echo $VVERSION | /bin/sed "s,^v,,"`
+  /bin/sed -i "s,^  \"version.*$,  \"version\": \"$VERSION\"\,," metadata.json 
+  /bin/echo "$VERSION"
+}
+
 if [ `/usr/bin/git diff README.md metadata.json | wc -l` -gt 0 ]
 then
-  /bin/echo 'Commit or stash outstanding changes to metadata.json and README before release'
+  /bin/echo 'Commit or stash outstanding changes to metadata.json and README, or git checkout previous version, before release'
   exit 1
 fi
-VVERSION=$(/usr/bin/git describe --tags | /bin/sed "s,-,.," | /bin/sed "s,-.*$,,")
-/bin/sed -i "s,^Version .*$,VERSION $VVERSION," README.md
-VERSION=`/bin/echo $VVERSION | /bin/sed "s,^v,,"`
-/bin/sed -i "s,^  \"version.*$,  \"version\": \"$VERSION\"\,," metadata.json 
+
+VVERSION=$(v_version)
+# /bin/echo $VVERSION
+VERSION=$(version)
+# /bin/echo $VERSION
+
+# VVERSION=$(/usr/bin/git describe --tags | /bin/sed "s,-,.," | /bin/sed "s,-.*$,,")
+# /bin/sed -i "s,^Version .*$,VERSION $VVERSION," README.md
+# VERSION=`/bin/echo $VVERSION | /bin/sed "s,^v,,"`
+# /bin/sed -i "s,^  \"version.*$,  \"version\": \"$VERSION\"\,," metadata.json 
 
 if [ "$LEGACY_VERSION" != "$VVERSION" ]
 then
@@ -20,7 +39,10 @@ then
   read commit_incremented_version
   if [[ $commit_incremented_version == 'yes' ]]
   then
-    /usr/bin/git commit metadata.json README.md -m"Update version to $VVERSION "
+    /usr/bin/git commit metadata.json README.md -m"make release used to update version to $VVERSION "
+    VVERSION=v_version
+    VERSION=version
+    /usr/bin/git commit --amend metadata.json README.md -m"make release used to update version to $VVERSION "
     exit 0
   else
     exit 1
