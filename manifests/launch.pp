@@ -16,5 +16,10 @@ define weave::launch (
     timeout => 600,
   }
 
+  exec { "restart_weave_for_$docker_host_weave_ip":
+    command => "$weave reset && $weave launch $docker_host_weave_ip $docker_cluster_peers ",
+     unless => "$docker ps -a | /bin/grep $weave_container | /bin/grep -v Exited -q",
+  }
+
 }
 
