@@ -1,58 +1,72 @@
-#!/bin/bash  
-# set -x  
-  
-function get_container_ip()  
-{  
-  container=$1  
-  DOCKER_IP=$(/usr/bin/docker inspect --format '{{ .NetworkSettings.IPAddress }}' $container)  
-  /bin/echo $DOCKER_IP  
-}  
-  
-function attach_or_not()   
-{  
-  RAW_IP=$1  
-  DOCKER_IP=$2  
-  # /bin/echo "Next we shell out to $DOCKER_IP, See if $IP_YAML or rather $RAW_IP is bound to ethwe"  
-  /usr/bin/ssh $DOCKER_IP "/sbin/ifconfig ethwe 2> /dev/null" | /bin/grep -q $RAW_IP  
-  /bin/echo $?  
-}  
-  
-function detach_or_not()  
-{  
-  RAW_IP=$1  
-  DOCKER_IP=$2  
-  # /bin/echo "Next we shell out to $DOCKER_IP, See if $IP_YAML or rather $RAW_IP is bound to ethwe"  
-  # RESULT=$(/usr/bin/ssh $DOCKER_IP "/sbin/ifconfig ethwe " )   
-  RESULT=$(/usr/bin/ssh $DOCKER_IP "/sbin/ifconfig ethwe 2> /dev/null" | /bin/grep $RAW_IP | wc -l)   
-  # /usr/bin/test "$RESULT" == "1"  
-  /bin/echo $?  
-}  
-  
-while getopts "adc:i:" opt; do  
-  case $opt in  
-    c)  
-      CONTAINER="$OPTARG"  
-      DOCKER_IP=$(get_container_ip $CONTAINER)  
-      # echo "-c was triggered with $OPTARG at $DOCKER_IP" >&2  
-      ;;  
-    i)  
-      IP_YAML="$OPTARG"  
-      RAW_IP=$(/bin/echo $IP_YAML | /bin/sed "s,/.*$,,")   
-      # echo "-i was triggered with $IP_YAML" >&2  
-      ;;  
-    a)  
-      ATTACH=$(attach_or_not $RAW_IP $DOCKER_IP)  
-      # echo "-a was triggered, attach is $ATTACH" >&2  
-      /bin/echo $ATTACH
-      ;;  
-    d)  
-      DETACH=$(detach_or_not $RAW_IP $DOCKER_IP)  
-      # echo "-d was triggered, detach is $DETACH" >&2  
-      /bin/echo $DETACH
-      ;;  
-    \?)  
-      echo "Invalid option: -$OPTARG" >&2  
-      ;;  
-  esac  
+#!/bin/bash
+# set -x
+
+function usage()
+{
+  /bin/echo "$0 -c <container_host_name> -i <ethwe_ip_from_hiera> [-a][-d][-v]"
+  /bin/echo "    -a  determine whether the weave IP ought to be attached to the container"
+  /bin/echo "    -d  determine whether the weave IP ought to be detached from the container"
+  /bin/echo "    -v  be verbose about it"
+  /bin/echo "    -c  the name or ID assigned to the container"
+  /bin/echo "    -i  the weave routable IP assigned to the container, as configured in hiera"
+}
+
+function get_container_ip()
+{
+  container=$1
+  DOCKER_IP=$(/usr/bin/docker inspect --format '{{ .NetworkSettings.IPAddress }}' $container)
+  /bin/echo $DOCKER_IP
+}
+
+function attach_or_not()
+{
+  RAW_IP=$1
+  DOCKER_IP=$2
+  if $VERBOSE
+  then
+    /bin/echo "Next we shell out to $DOCKER_IP, See if $IP_YAML or rather $RAW_IP is bound to ethwe"
+  fi
+  /usr/bin/ssh $DOCKER_IP "/sbin/ifconfig ethwe 2> /dev/null" | /bin/grep -q $RAW_IP
+  /bin/echo $?
+}
+
+function detach_or_not()
+{
+  RAW_IP=$1
+  DOCKER_IP=$2
+  if $VERBOSE
+  then
+    /bin/echo "Next we shell out to $DOCKER_IP, See if $IP_YAML or rather $RAW_IP is bound to ethwe"
+  fi
+  RESULT=$(/usr/bin/ssh $DOCKER_IP "/sbin/ifconfig ethwe 2> /dev/null" | /bin/grep $RAW_IP | wc -l)
+  /bin/echo $RESULT
+}
+
+while getopts "advc:i:" opt; do
+  case $opt in
+    c)
+      CONTAINER="$OPTARG"
+      DOCKER_IP=$(get_container_ip $CONTAINER)
+      ;;
+    i)
+      IP_YAML="$OPTARG"
+      RAW_IP=$(/bin/echo $IP_YAML | /bin/sed "s,/.*$,,")
+      ;;
+    v)
+      VERBOSE=1
+      ;;
+    a)
+      ATTACH=$(attach_or_not $RAW_IP $DOCKER_IP)
+      exit $ATTACH
+      ;;
+    d)
+      DETACH=$(detach_or_not $RAW_IP $DOCKER_IP)
+      exit $DETACH
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      usage
+      ;;
+  esac
 done
 
