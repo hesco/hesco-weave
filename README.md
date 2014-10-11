@@ -11,8 +11,8 @@
 5. [Usage - Configuration options and additional functionality](#usage)
     * [Organizing role::docker_host](#organizing-the-docker_host-role)
     * [Setting up hiera data](#setting-up-hiera)
-    * [Use weave::run to configure containers](#use-weave-run-to-configure-containers)
-    * [Use weave::interface to enforce ethwe state on containers](#use-weave-interface-to-enforce_ethwe-state_on-containers)
+    * [Use weave::run to configure containers](#use-weave-run-type-to-configure-containers)
+    * [Use weave::interface to enforce ethwe state on containers](#use-weave-interface-to-enforce_ethwe-state-on-containers)
 6. [Reference - An under-the-hood peek at what the module is doing and how](#reference) # PENDING
 7. [Limitations - OS compatibility, etc.](#limitations)
 8. [Development - Guide for contributing to the module](#development)
