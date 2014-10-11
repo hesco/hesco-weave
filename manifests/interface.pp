@@ -8,15 +8,11 @@ define weave::interface ( $ensure, $ip, $container ) {
   validate_absolute_path( $weave )
   validate_absolute_path( $docker )
   if ! is_ip_address( $docker_host_weave_ip ) {
-
-    validate_bool( [ "$docker_host_weave_ip is not a valid ip" ] )
-
+    validate_bool( [ "$docker_host_weave_ip is not a valid ip, fix hiera for weave::docker_host_weave_ip key" ] )
   }
 
   if ! is_ip_address( $ip ) {
-
-    validate_bool( [ "$ip is not a valid ip" ] )
-
+    validate_bool( [ "$ip is not a valid ip for ethwe" ] )
   }
 
   # these tests are docker specific, though I suppose that weave could be 
