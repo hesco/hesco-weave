@@ -15,8 +15,8 @@ define weave::interface ( $ensure, $ip, $container ) {
     validate_bool( [ "$ip is not a valid ip for ethwe" ] )
   }
 
-  # these tests are docker specific, though I suppose that weave could be 
-  # used for other purposes and that these tests should perhaps take that into account.  
+  # these tests are docker specific, though I suppose that weave could be
+  # used for other purposes and that these tests should perhaps take that into account.
   if $ensure == 'present' {
 
     exec { "weave attach $ip $container":
