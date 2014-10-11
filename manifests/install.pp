@@ -20,6 +20,11 @@ class weave::install (
       mode => '0755',
   }
 
+  file { '/usr/local/bin/test_docker_container_for_ethwe':
+    source => 'puppet:///modules/weave/usr/local/bin/test_docker_container_for_ethwe',
+      mode => '0755',
+  }
+
   docker::image { "$weave_image":
        ensure => $ensure,
     image_tag => $weave_image_tag,

@@ -19,11 +19,13 @@ define weave::interface ( $ensure, $ip, $container ) {
 
   }
 
+  # these tests are docker specific, though I suppose that weave could be 
+  # used for other purposes and that these tests should perhaps take that into account.  
   if $ensure == 'present' {
 
     exec { "weave attach $ip $container":
       command => "$weave attach $ip $container ",
-       unless => "IP=$(/usr/bin/docker inspect --format '{{ .NetworkSettings.IPAddress }}' $container) && RAW_IP=$(/bin/echo '$ip' | /bin/sed \"s,/.*$,,\") && /usr/bin/ssh $IP \"/sbin/ifconfig ethwe \" | /bin/grep -q $RAW_IP",
+       unless => "/usr/local/bin/test_docker_container_for_ethwe -c $container -i $ip -a",
       require => [ Exec["weave_launch_$docker_host_weave_ip"],
                    Exec["restart_weave_for_$docker_host_weave_ip"] ],
     }
@@ -32,7 +34,7 @@ define weave::interface ( $ensure, $ip, $container ) {
 
     exec { "weave detach $ip $container":
       command => "$weave detach $ip $container ",
-       unless => "IP=$(/usr/bin/docker inspect --format '{{ .NetworkSettings.IPAddress }}' $container) && RAW_IP=$(/bin/echo '$ip' | /bin/sed \"s,/.*$,,\") && RESULT=$(/usr/bin/ssh $IP \"/sbin/ifconfig ethwe \" | /bin/grep $RAW_IP | wc -l) && /usr/bin/test \"$RESULT\" == \"1\"",
+       unless => "/usr/local/bin/test_docker_container_for_ethwe -c $container -i $ip -d",
       require => [ Exec["weave_launch_$docker_host_weave_ip"],
                    Exec["restart_weave_for_$docker_host_weave_ip"] ],
     }
