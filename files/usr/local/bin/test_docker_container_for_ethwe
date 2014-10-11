@@ -6,7 +6,7 @@ function usage()
   /bin/echo "$0 -c <container_host_name> -i <ethwe_ip_from_hiera> [-a][-d][-v]"
   /bin/echo "    -a  determine whether the weave IP ought to be attached to the container"
   /bin/echo "    -d  determine whether the weave IP ought to be detached from the container"
-# /bin/echo "    -v  be verbose about it, use for debugging only, breaks exit codes"
+  /bin/echo "    -v  be verbose about it, use for debugging only, breaks exit codes (DISABLED)"
   /bin/echo "    -c  the name or ID assigned to the container"
   /bin/echo "    -i  the weave routable IP assigned to the container, as configured in hiera"
 }
