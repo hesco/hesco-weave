@@ -6,7 +6,7 @@ function usage()
   /bin/echo "$0 -c <container_host_name> -i <ethwe_ip_from_hiera> [-a][-d][-v]"
   /bin/echo "    -a  determine whether the weave IP ought to be attached to the container"
   /bin/echo "    -d  determine whether the weave IP ought to be detached from the container"
-  /bin/echo "    -v  be verbose about it"
+# /bin/echo "    -v  be verbose about it, use for debugging only, breaks exit codes"
   /bin/echo "    -c  the name or ID assigned to the container"
   /bin/echo "    -i  the weave routable IP assigned to the container, as configured in hiera"
 }
@@ -22,10 +22,10 @@ function attach_or_not()
 {
   RAW_IP=$1
   DOCKER_IP=$2
-  if $VERBOSE
-  then
-    /bin/echo "Next we shell out to $DOCKER_IP, See if $IP_YAML or rather $RAW_IP is bound to ethwe"
-  fi
+  # if $VERBOSE
+  # then
+  #   /bin/echo "Next we shell out to $DOCKER_IP, See if $IP_YAML or rather $RAW_IP is bound to ethwe"
+  # fi
   /usr/bin/ssh $DOCKER_IP "/sbin/ifconfig ethwe 2> /dev/null" | /bin/grep -q $RAW_IP
   /bin/echo $?
 }
@@ -34,10 +34,10 @@ function detach_or_not()
 {
   RAW_IP=$1
   DOCKER_IP=$2
-  if $VERBOSE
-  then
-    /bin/echo "Next we shell out to $DOCKER_IP, See if $IP_YAML or rather $RAW_IP is bound to ethwe"
-  fi
+  # if $VERBOSE
+  # then
+  #   /bin/echo "Next we shell out to $DOCKER_IP, See if $IP_YAML or rather $RAW_IP is bound to ethwe"
+  # fi
   RESULT=$(/usr/bin/ssh $DOCKER_IP "/sbin/ifconfig ethwe 2> /dev/null" | /bin/grep $RAW_IP | wc -l)
   /bin/echo $RESULT
 }
@@ -57,10 +57,22 @@ while getopts "advc:i:" opt; do
       ;;
     a)
       ATTACH=$(attach_or_not $RAW_IP $DOCKER_IP)
+      # if $VERBOSE
+      # then
+      #   /bin/echo $ATTACH
+      # else
+      #   exit $ATTACH
+      # fi
       exit $ATTACH
       ;;
     d)
       DETACH=$(detach_or_not $RAW_IP $DOCKER_IP)
+      # if $VERBOSE
+      # then
+      #   /bin/echo $DETACH
+      # else
+      #   exit $DETACH
+      # fi:
       exit $DETACH
       ;;
     \?)
