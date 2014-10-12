@@ -6,7 +6,7 @@
 # === Parameters
 #
 # [docker_host_weave_ip]
-#   Required, in dotted quad notation, for the IP assigned in the weave 
+#   Required, in dotted quad/cidr notation, for the IP assigned in the weave 
 #   managed private network to the docker host to which this class is 
 #   being applied.  This can be passed across the interface, or configured 
 #   in hiera as weave::docker_host_weave_ip.
@@ -72,7 +72,7 @@
 #    $log = "-v /data/var/log/postgresql/$domain:/var/log/postgresql"
 #    $backups = '-v /data/home/ymdbackups:/home/ymdbackups'
 #    $attach = "$config $data $log $backups"
-#    $options = "-d --name=\"$domain\" -h $domain $docker_run_opts $ports $attach "
+#    $options = "--name=\"$domain\" -h $domain $docker_run_opts $ports $attach "
 #   
 #    weave::run { "$domain $ip":
 #           ip => $ip,
