@@ -284,18 +284,23 @@ turn this into something useful.
 
 ## To-Do tasks for hesco-weave 
 
-The `weave::install` manifest needs to use [puppetlabs-firewall](https://forge.puppetlabs.com/puppetlabs/firewall) 
+[hesco-weave #1](../../issues/1) The `weave::install` manifest needs to use 
+[puppetlabs-firewall](https://forge.puppetlabs.com/puppetlabs/firewall) 
 to ensure that port 6783 is open for tcp and udp traffic among the docker hosts.  
 
-I want to permit the `weave::docker_cluster_peers` key to accept either a space
-delimited string or a yaml array, and have it do the right thing either way.
+[hesco-weave #2](../../issues/2) I want to permit the `weave::docker_cluster_peers` 
+key to accept either a space delimited string or a yaml array, and have it do the 
+right thing either way.
 
-I want to add some custom `Facter::facts` to expose the containers and network hosted 
-on the weave bridge or a particular docker host.
+[hesco-weave #3](../../issues/3), [hesco-weave #4](../../issues/4) I want to add 
+some custom `Facter::facts` to expose the containers and network hosted on the 
+weave bridge or a particular docker host.
 
-An additional `weave::migrate` type is required to facilitate migrating a docker container
-from one docker host to another, while preserving its network connectivity.
+[hesco-weave #5](../../issues/5) An additional `weave::migrate` type is required 
+to facilitate migrating a docker container from one docker host to another, while 
+preserving its network connectivity.
 
+[hesco-weave #6](../../issues/6) 
 At the moment, my hiera data exposes a hash of hashes and an inhouse module is left with 
 responsibility for munging, validating and sanity checking that data before the `weave::run`
 and `weave::interface` types are handed what they need to get the job done.  This seemed an 
@@ -307,11 +312,13 @@ their own environments.
 
 ## To-Do tasks for other projects
 
-I believe that the [zettio-weave project](https://github.com/zettio/weave) needs to sort 
+[weave #117](https://github.com/zettio/weave/issues/117) I believe that the 
+[zettio-weave project](https://github.com/zettio/weave) needs to sort 
 out how to use its run, attach and detach subcommands to inject information about the 
 weave bridge into the `docker inspect <container>` output.  
 
-In my mind, the [garethr/docker module](https://github.com/garethr/garethr-docker) needs
+[docker #34](https://github.com/garethr/garethr-docker/issues/34) In my mind, 
+the [garethr/docker module](https://github.com/garethr/garethr-docker) needs
 an additional defined type, `docker::build`, to handle the initial build of a docker container,
 from which the image used by `weave::run` can be launched with its additional ethwe bridge
 connected interface, created by `weave`.  In the mean time, I am handling that step manually
