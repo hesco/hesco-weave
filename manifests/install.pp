@@ -13,6 +13,8 @@ class weave::install (
     ensure => $ensure,
   }
 
+  # ensure_resource( 'weave::firewall', hiera( 'weave::docker_cluster_peers_array' ) )
+
   # wget -O weave/files/usr/local/bin/weave https://raw.githubusercontent.com/zettio/weave/master/weaver/weave
   file { "$weave": 
     ensure => $ensure,
