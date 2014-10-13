@@ -27,7 +27,7 @@ hesco-weave -- puppet module for deploying and managing a docker network with we
 
 # VERSION
 
-Version v0.06.7
+Version v0.06.10
 
 This is alpha code and no promises are made at this early stage as to the stability
 of its interface, or its suitability for production use.  The weave project is still
