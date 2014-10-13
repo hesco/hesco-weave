@@ -94,13 +94,14 @@
 
 class weave (
 
-  $docker_host_weave_ip = $weave::params::docker_host_weave_ip,
-  $docker_cluster_peers = $weave::params::docker_cluster_peers,
-  $docker               = $weave::params::docker,
-  $weave                = $weave::params::weave,
-  $weave_container      = $weave::params::weave_container,
-  $weave_image          = $weave::params::weave_image,
-  $weave_image_tag      = $weave::params::weave_image_tag,
+  $docker_host_weave_ip  = $weave::params::docker_host_weave_ip,
+  $docker_cluster_peers  = $weave::params::docker_cluster_peers,
+  $docker                = $weave::params::docker,
+  $weave                 = $weave::params::weave,
+  $weave_container       = $weave::params::weave_container,
+  $weave_image           = $weave::params::weave_image,
+  $weave_image_tag       = $weave::params::weave_image_tag,
+  $weave_manage_firewall = $weave::params::weave_manage_iptables,
 
 ) inherits weave::params {
 
@@ -120,8 +121,9 @@ class weave (
   anchor { 'weave::begin': } ->
   class { 'weave::install': } ->
   weave::launch { "$docker_host_weave_ip":
-    docker_host_weave_ip => $docker_host_weave_ip,
-    docker_cluster_peers => $docker_cluster_peers,
+     docker_host_weave_ip => $docker_host_weave_ip,
+     docker_cluster_peers => $docker_cluster_peers,
+    weave_manage_firewall => $weave_manage_iptables,
   } ~>
   anchor { 'weave::end': }
 
