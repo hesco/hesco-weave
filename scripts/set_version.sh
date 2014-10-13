@@ -4,7 +4,7 @@ LEGACY_VERSION=`/bin/grep ^VERSION README.md | /bin/sed "s,^VERSION ,,"`
 
 function v_version() {
   local VVERSION=$(/usr/bin/git describe --tags | /bin/sed "s,-,.," | /bin/sed "s,-.*$,,")
-  if [ ! -f READDME.md ]
+  if [ ! -f README.md ]
   then
     /bin/echo "Add a README.md file and try again."
     exit 1
