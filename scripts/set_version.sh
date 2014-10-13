@@ -4,10 +4,11 @@ LEGACY_VERSION=`/bin/grep ^VERSION README.md | /bin/sed "s,^VERSION ,,"`
 
 function v_version() {
   local VVERSION=$(/usr/bin/git describe --tags | /bin/sed "s,-,.," | /bin/sed "s,-.*$,,")
-  if [ ! -f READDME.md ]{
+  if [ ! -f READDME.md ]
+  then
     /bin/echo "Add a README.md file and try again."
     exit 1
-  }
+  fi
   [ -f README.md ] && /bin/sed -i "s,^Version .*$,Version $VVERSION," README.md
   /bin/echo "$VVERSION"
 }
@@ -15,10 +16,11 @@ function v_version() {
 function version() {
   local VVERSION=$(v_version)
   local VERSION=`/bin/echo $VVERSION | /bin/sed "s,^v,,"`
-  if [ ! -f metadata.json ] && [ ! -f Modulefile ] {
+  if [ ! -f metadata.json ] && [ ! -f Modulefile ]
+  then
     /bin/echo "Add a metadata.json file and try again."
     exit 1
-  }
+  fi
   [ -f metadata.json ] && /bin/sed -i "s,^  \"version.*$,  \"version\": \"$VERSION\"\,," metadata.json 
   [ -f Modulefile ] && /bin/sed -i "s,^version .*$,version '$VERSION'," Modulefile 
   /bin/echo "$VERSION"
