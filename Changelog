@@ -11,7 +11,11 @@
 		v0.06 is now v0.6
 
 v0.7-??- -- 20141013 -- INTERFACE CHANGE for weave::run
-	* ab6c027 (HEAD, master) Add sanity checks, allow for either Modulefile or metadata.json
+	* bd2c9bc (tag: v0.7) README: weave::run interface change, weave::firewall suppressed, broken public tags
+	* 74d38a3 Commit changes to Modulefile when version incremented (Makefile change)
+	* 7debb44 Updates version in Modulefile
+	* c468f54 update changelog, to nearly v0.7
+	* ab6c027 Add sanity checks, allow for either Modulefile or metadata.json
 	|\  
 	| * a0be0de make release used to update version to v0.6.11 RELEASED
 	| * b4f2894 Adds Modulefile back to project, patches set_version.sh to manage it

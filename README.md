@@ -12,9 +12,10 @@
     * [Organizing role::docker_host](#organizing-the-docker_host-role)
     * [Setting up hiera data](#setting-up-hiera)
     * [Use weave::run to configure containers](#use-weave-run-type-to-configure-containers)
-    * [Use weave::interface to enforce ethwe state on containers](#use-weave-interface-to-enforce_ethwe-state-on-containers)
+    * [Use weave::interface - enforce ethwe state on containers](#use-weave-interface)
+    * [Use weave::firewall - manage docker host firewall for weave](#use-weave-firewall) # PENDING
 6. [Reference - An under-the-hood peek at what the module is doing and how](#reference) # PENDING
-7. [Limitations - OS compatibility, etc.](#limitations)
+7. [Limitations - Caveats, OS compatibility, etc.](#limitations)
 8. [Development - Guide for contributing to the module](#development)
 9. [To-Do](#to-do)
     * [To-Do tasks for hesco-weave](#to-do-tasks-for-hesco-weave)
@@ -237,10 +238,14 @@ That defined type wraps the following in sanity checks and data validation to en
 valid data is being passed from the hiera data store to a defined type exposed by this module:
 
     weave::run { "weave run $host_name at $ip":
+         host => $container_name,
            ip => $ip,
         image => $image,
       options => $options
     }
+
+The host key in this invocation is new to version v0.7.xx and was necessary to resolve the 
+[bug described here](../../issues/7).
 
 Under the hood `weave::run` is calling the `weave` script which wraps a call to `docker run` with 
 additional bash code to plumb the weave network on to the docker container.  
@@ -265,7 +270,26 @@ checks and validation tests to data fed to another defined type exposed by this 
       container => $host_name,
     }
 
+## Use weave::firewall - manage docker host firewall for weave
+
+Pending . . . 
+
+Although code for this upcoming feature has been committed to the repository and is included 
+in this package, its use is currently suppressed.  This [feature](../../issues/1) requires 
+some additional work before being ready for even alpha testing.  Your patience or patches 
+are appreciated.  
+
+# REFERENCE
+
+Pending . . . 
+
 # LIMITATIONS
+
+If you are an early adopter who has used the github repository to interact with this module, 
+consider yourself warned that I have rewritten public history by updating tags as described 
+in the Changlog.  Tags v0.0.4, v0.01, v0.02, v0.03, v0.04, v0.05 and v0.06 are no longer present 
+in the public repository.  These changes were made to comply with the versioning standards outlined 
+at semver.org and necesssary to upload releases to the puppet forge.  
 
 So far this has only been tested on Debian, jessie/testing.  Reports of your experiences
 with this code in other environments are appreciated, particularly when they include tests
