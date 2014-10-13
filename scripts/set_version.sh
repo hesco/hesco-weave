@@ -12,6 +12,7 @@ function version() {
   local VVERSION=$(v_version)
   local VERSION=`/bin/echo $VVERSION | /bin/sed "s,^v,,"`
   /bin/sed -i "s,^  \"version.*$,  \"version\": \"$VERSION\"\,," metadata.json 
+  /bin/sed -i "s,^version .*$,version '$VERSION'," Modulefile 
   /bin/echo "$VERSION"
 }
 
