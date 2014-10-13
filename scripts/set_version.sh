@@ -44,7 +44,7 @@ then
     /usr/bin/git commit metadata.json README.md -m"make release used to update version to $VVERSION "
     VVERSION=$(v_version)
     VERSION=$(version)
-    /usr/bin/git commit --amend metadata.json README.md -m"make release used to update version to $VVERSION "
+    /usr/bin/git commit --amend metadata.json README.md Modulefile -m"make release used to update version to $VVERSION "
     exit 0
   else
     exit 1
