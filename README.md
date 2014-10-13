@@ -11,13 +11,13 @@
 5. [Usage - Configuration options and additional functionality](#usage)
     * [Organizing role::docker_host](#organizing-the-docker_host-role)
     * [Setting up hiera data](#setting-up-hiera)
-    * [Use weave::run to configure containers](#use-weave-run-to-configure-containers)
-    * [Use weave::interface to enforce ethwe state on containers](#use-weave-interface-to-enforce_ethwe-state_on-containers)
+    * [Use weave::run to configure containers](#use-weave-run-type-to-configure-containers)
+    * [Use weave::interface to enforce ethwe state on containers](#use-weave-interface-to-enforce_ethwe-state-on-containers)
 6. [Reference - An under-the-hood peek at what the module is doing and how](#reference) # PENDING
 7. [Limitations - OS compatibility, etc.](#limitations)
 8. [Development - Guide for contributing to the module](#development)
 9. [To-Do](#to-do)
-    * [To-Do tasks for hesco-weave(#to-do-tasks-for-hesco-weave)
+    * [To-Do tasks for hesco-weave](#to-do-tasks-for-hesco-weave)
     * [To-Do tasks for other projects](#to-do-tasks-for-other-projects)
 10. [Copyright and License](#copyright-and-license)
 
@@ -27,7 +27,7 @@ hesco-weave -- puppet module for deploying and managing a docker network with we
 
 # VERSION
 
-Version v0.06.1
+Version v0.6.11
 
 This is alpha code and no promises are made at this early stage as to the stability
 of its interface, or its suitability for production use.  The weave project is still
@@ -56,8 +56,8 @@ Then rather than using `docker run`, you will use the weave script's `weave run`
 to wrap docker with additional code to configure the Software Defined Network around an
 arbitrary docker container.
 
-This puppet module exposes at this early stage of its development three defined types: weave::launch,
-weave::run and weave::interface to make these tools available from a puppet manifest.  It also manages 
+This puppet module exposes at this early stage of its development three defined types: `weave::launch`,
+`weave::run` and `weave::interface` to make these tools available from a puppet manifest.  It also manages 
 the installation and uninstall of weave, its docker hosted router and packaged dependencies.
 
 # INSTALLATION
@@ -68,6 +68,7 @@ For the time being, this module may be installed like so:
     # git clone https://github.com/hesco/hesco-weave.git
 
 Now that [this module has been published to the puppet forge](https://forge.puppetlabs.com/hesco/weave),
+and at the risk of missing out on the latest and greatest and potentially less than stable changes, 
 it can be installed using puppet, like so:
 
     # puppet module install -i /etc/puppet/modules hesco/weave
@@ -79,30 +80,30 @@ Read `puppet help module install` for other useful options.
 If you install this from the git repository rather than from the forge,
 dependencies must be managed manually.  This module requires:
 
-    * [puppetlabs/stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
-    * [puppetlabs/firewall](https://forge.puppetlabs.com/puppetlabs/firewall)
-    * [garethr/docker](https://forge.puppetlabs.com/garethr/docker)
+    - [puppetlabs/stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
+    - [puppetlabs/firewall](https://forge.puppetlabs.com/puppetlabs/firewall)
+    - [garethr/docker](https://forge.puppetlabs.com/garethr/docker)
 
 Actually, the firewall module is intended to support a future, not yet implemented feature.
 
 ## What weave affects
 
-weave::install --
-installs packages for ethtool and conntrack
-deploys a pinned version of /usr/local/bin/weave
+`weave::install` --
+installs packages for `ethtool` and `conntrack`
+deploys a pinned version of `/usr/local/bin/weave`
 Read the source for instructions on upgrading the weave script
 
-weave::launch --
-will run docker pull the zettio/weave docker image
-use the weave script to launch a weave router as a docker container
+`weave::launch` --
+will run `docker pull zettio/weave` to grab the `:latest` docker image
+use the weave script to `weave launch` a weave router as a docker container
 set up a weave bridge and associated network interfaces
 reset and restart the weave container if it crashes
 
-weave::run --
+`weave::run` --
 invokes `weave run` which wraps `docker run` to deploy a docker container from an image
 creates weave interfaces, uses them to attach a container to the weave bridge
 
-weave::interface --
+`weave::interface` --
 enforces state (present and absent, supported) for an ethwe interface on a container
 this defined type can be used to retroactively attach existing docker containers to a new weave router
 
@@ -114,7 +115,7 @@ My docker_host role class, looks like this:
 
     class role::docker_host { include profile::docker_weave }
 
-The docker_weave profile uses the garethr/docker module to install docker.
+The `docker_weave` profile uses the `garethr/docker` module to install docker.
 The garethr module also exposes a couple of defined types used in the weave
 module and perhaps elsewhere in my internal codebase.
 
@@ -134,10 +135,10 @@ module and perhaps elsewhere in my internal codebase.
 
 ## setting up hiera
 
-Including the hesco/weave module (`include weave`) in profile::docker_weave, along 
-with the following hiera settings, handles the installation (and uninstall) of the
-zettio/weave script and its supporting docker image, used to build a docker
-container hosting an SDN router.
+Including the [hesco/weave](https://github.com/hesco/hesco-weave) module (`include weave`) 
+in profile::docker_weave, along with the following hiera settings, handles the installation 
+(and uninstall) of the `zettio/weave` script and its supporting docker image, used to build 
+a docker container hosting an SDN router.
 
 my /etc/puppet/hiera.yaml --
 
@@ -203,11 +204,12 @@ my /etc/puppet/hieradata/dhcp.yaml --
     # additional key->hash definition for each docker image type
 
 I have been advised that by deploying a weave network, I can now disable 
-the docker bridge, by setting --net=none.  But for the moment I continue 
-to use it to manage the containers, even while I intend to use the weave 
-bridge for inter-container communication.  
+the docker bridge, by setting `--net=none`.  But for the moment I continue 
+to use ithe docker bridge to manage the containers from the docker hosts, 
+even while I intend to use the weave bridge for inter-container communication.  
 
-In the data structure for my haproxy image, I include:
+In the data structure for my haproxy image, I also set the published ports
+as a yaml array:
 
     haproxy:
       ports:
@@ -226,7 +228,7 @@ my /etc/puppet/hieradata/nodes/dockerhost01.example.com.yaml --
 
 ## use weave::run type to configure containers
 
-Next, my "docker_cluster::hosts::${fqdn_normalized}" profile includes
+Next, my `"docker_cluster::hosts::${fqdn_normalized}"` profile includes
 defined type invocations which look like this:
 
     my_docker::container { 'weave_run s01.example.com': host_name => 's01.example.com' }
@@ -240,14 +242,14 @@ valid data is being passed from the hiera data store to a defined type exposed b
       options => $options
     }
 
-Under the hood weave::run is calling the weave script which wraps a call to `docker run` with 
-additional bash code to plumb the weaev network on to the docker container.  
+Under the hood `weave::run` is calling the `weave` script which wraps a call to `docker run` with 
+additional bash code to plumb the weave network on to the docker container.  
 
 ## use weave::interface to enforce ethwe state on containers
 
 And finally, to enforce state, or to retroactively attach existing containers launched 
 with `docker run` rather than `weave run` or the methods exposed by this module, 
-my docker_cluster::hosts::${fqdn_normalized} profile now includes: 
+my `docker_cluster::hosts::${fqdn_normalized}` profile now includes: 
     
     my_docker::network::interface { 's01.example.com ethwe interface':
       host_name => 's01.example.com',
@@ -282,21 +284,26 @@ turn this into something useful.
 
 ## To-Do tasks for hesco-weave 
 
-The weave::install manifest needs to use puppetlabs-firewall to ensure that port 6783 is 
-open for tcp and udp traffic among the docker hosts.  
+[hesco-weave #1](../../issues/1) The `weave::install` manifest needs to use 
+[puppetlabs-firewall](https://forge.puppetlabs.com/puppetlabs/firewall) 
+to ensure that port 6783 is open for tcp and udp traffic among the docker hosts.  
 
-I want to permit the weave::docker_cluster_peers key to accept either a space
-delimited string or a yaml array, and have it do the right thing either way.
+[hesco-weave #2](../../issues/2) I want to permit the `weave::docker_cluster_peers` 
+key to accept either a space delimited string or a yaml array, and have it do the 
+right thing either way.
 
-I want to add some custom Facter::facts to expose the containers and network hosted 
-on the weave bridge or a particular docker host.
+[hesco-weave #3](../../issues/3), [hesco-weave #4](../../issues/4) I want to add 
+some custom `Facter::facts` to expose the containers and network hosted on the 
+weave bridge or a particular docker host.
 
-An additional weave::migrate type is required to facilitate migrating a docker container
-from one docker host to another, while preserving its network connectivity.
+[hesco-weave #5](../../issues/5) An additional `weave::migrate` type is required 
+to facilitate migrating a docker container from one docker host to another, while 
+preserving its network connectivity.
 
+[hesco-weave #6](../../issues/6) 
 At the moment, my hiera data exposes a hash of hashes and an inhouse module is left with 
-responsibility for munging, validating and sanity checking that data before the weave::run 
-and weave::interface types are handed what they need to get the job done.  This seemed an 
+responsibility for munging, validating and sanity checking that data before the `weave::run`
+and `weave::interface` types are handed what they need to get the job done.  This seemed an 
 appropriate balance between making this code available and not wanting to dictate the 
 structure of other folks hiera data stores.  But I am open to feedback on whether that 
 balance ought to be tipped in the other direction to facilitate ease of use for consumers 
@@ -305,21 +312,23 @@ their own environments.
 
 ## To-Do tasks for other projects
 
-I believe that the [zettio-weave project](https://github.com/zettio/weave) needs to sort 
+[weave #117](https://github.com/zettio/weave/issues/117) I believe that the 
+[zettio-weave project](https://github.com/zettio/weave) needs to sort 
 out how to use its run, attach and detach subcommands to inject information about the 
 weave bridge into the `docker inspect <container>` output.  
 
-In my mind, the [garethr/docker module](https://github.com/garethr/garethr-docker) needs
-an additional defined type, docker::build, to handle the initial build of a docker container,
-from which the image used by weave::run can be launched with its additional ethwe bridge
-connected interface, created by weave.  In the mean time, I am handling that step manually
+[docker #34](https://github.com/garethr/garethr-docker/issues/34) In my mind, 
+the [garethr/docker module](https://github.com/garethr/garethr-docker) needs
+an additional defined type, `docker::build`, to handle the initial build of a docker container,
+from which the image used by `weave::run` can be launched with its additional ethwe bridge
+connected interface, created by `weave`.  In the mean time, I am handling that step manually
 with a Dockerfile and a wrapper bash script to drive it.  Those are all in my repository
-and deployed by: my_docker::helper_scripts.
+and deployed by: `my_docker::helper_scripts`.
 
 # COPYRIGHT AND LICENSE
 
 Copyright 2014 Hugh Esco <hesco@campaignfoundations.com>
 YMD Partners LLC dba/ [CampaignFoundations.com](http://CampaignFoundations.com)
 
-Released under the Gnu Public License.
+Released under the Gnu Public License v2.
 
