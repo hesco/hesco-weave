@@ -334,6 +334,18 @@ balance ought to be tipped in the other direction to facilitate ease of use for 
 of this module, at the cost perhaps of constraining design choices they might make about 
 their own environments.  
 
+[hesco-weave #8](../../issues/8): BUG: Exclude local IP from peers array for weave::launch
+While not a fatal error, it does provide for noisy logs.  
+
+[hesco-weave #9](../../issues/9): new class needed to provide version check
+weave::init ought to include a weave::version_check class, before the ::install class 
+is invoked which will query for new versions of zettio/weave and of the hesco-weave 
+modules and Notify[] the puppet agent of th eopportunity to upgrade either or both modules.   
+
+[hesco-weave #10](../../issues/10): extend weave::install to support ensure => latest
+Once upstream zettio/weave project provides for semantic versioning, we should be able to 
+`ensure => latest` without performing backflips to sort out which git hash version ID to install.  
+
 ## To-Do tasks for other projects
 
 [weave #117](https://github.com/zettio/weave/issues/117) I believe that the 
