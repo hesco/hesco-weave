@@ -106,8 +106,8 @@ class weave (
 ) inherits weave::params {
 
   include stdlib
-  include firewall
-  include docker
+  # include firewall
+  include  docker
 
   validate_absolute_path( $weave )
   validate_absolute_path( $docker )
@@ -118,6 +118,7 @@ class weave (
   # for $docker_cluster_peer in $docker_cluster_peers
   # validate_bool( is_ip_address( $docker_cluster_peer) )
 
+  # notify { 'running weave::init': }
   anchor { 'weave::begin': } ->
   class { 'weave::install': } ->
   weave::launch { "$docker_host_weave_ip":
