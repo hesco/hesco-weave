@@ -274,10 +274,13 @@ checks and validation tests to data fed to another defined type exposed by this 
 
 Pending . . . 
 
-Although code for this upcoming feature has been committed to the repository and is included 
-in this package, its use is currently suppressed.  This [feature](../../issues/1) requires 
-some additional work before being ready for even alpha testing.  Your patience or patches 
-are appreciated.  
+Code for this feature has been committed to the repository and is included in this package, 
+its use is optional and requires setting a weave::mangage_firewall option in hiera.  
+This [feature](../../issues/1) requires some additional testing before being ready for a
+production deployment.  Your patience or patches are appreciated.  This feature requires 
+application of a [patch to the puppetlabs/firewall module described here](https://tickets.puppetlabs.com/browse/MODULES-1470), 
+and in [this pending pull request](https://github.com/puppetlabs/puppetlabs-firewall/pull/433) 
+to support the negation of an -i or -o interface switch in an iptables rule.
 
 # REFERENCE
 
