@@ -38,7 +38,6 @@ class weave::firewall::docker {
   }
 
   # -A OUTPUT ! -d 127.0.0.0/8 -m addrtype --dst-type LOCAL -j DOCKER 
-  # does this belong in nat or filter table ???
   firewall { '00100 DOCKER chain, route LOCAL non-loopback traffic to DOCKER':
           table => 'nat',
        dst_type => 'LOCAL',
