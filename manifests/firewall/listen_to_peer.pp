@@ -1,5 +1,5 @@
 
-define weave::firewall ( $peer ) {
+define weave::firewall::listen_to_peer ( $peer ) {
 
   # must convert $weave::docker_cluster_peers into an array
 
