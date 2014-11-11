@@ -7,6 +7,8 @@
 
 define weave::firewall::dnat_published_port ( $container_ip, $published_port, $protocol, $public_ip ) {
 
+  $rule_id = sprintf("%05d",$published_port)
+
   firewall { "$rule_id FORWARD $published_port for $container_ip":
           chain => 'FORWARD',
           dport => [ $published_port ],
@@ -28,7 +30,7 @@ define weave::firewall::dnat_published_port ( $container_ip, $published_port, $p
          todest => "$container_ip:$published_port",
            jump => 'DNAT',
     }
-  else {
+  } else {
     firewall { "$rule_id dnat $published_port for $container_ip":
         table => 'nat',
         chain => 'DOCKER',

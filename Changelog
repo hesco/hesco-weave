@@ -1,4 +1,7 @@
 
+Expose containers on a weave network as Facter::facts on the docker host
+https://github.com/hesco/hesco-weave/issues/4
+
 	I have messed with the public history by fixing tags 
 	which failed to comply with semver.org standards:
 
@@ -9,6 +12,7 @@
 		v0.04 is now v0.4
 		v0.05 is now v0.5
 		v0.06 is now v0.6
+
 
 v0.7-??-b1c129c -- 20141013 -- INTERFACE CHANGE for weave::run
 	* b1c129c (tag: v0.7) bust bug: perl style conditionals in bash script

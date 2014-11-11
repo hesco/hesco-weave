@@ -16,7 +16,7 @@ define weave::run ( $host, $ip, $image, $options ){
      unless => "$docker inspect -f '{{ .Image }}' $host 2>&1 | /bin/grep -v '^Error\|<no value>' -q ",
     timeout => 600,
      require => [ Exec["weave_launch_$docker_host_weave_ip"],
-                  Exec["restart_weave_for_$docker_host_weave_ip"] ],
+                  Exec["reset_weave_for_$docker_host_weave_ip"] ],
   }
 
 }
