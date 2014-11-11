@@ -25,7 +25,14 @@ define weave::launch (
   }
 
   if $weave_manage_firewall {
-    include weave::firewall
+    include weave::firewall::docker
+    include weave::firewall::weave
+    if is_string( $docker_cluster_peers ){
+      $peers = split($docker_cluster_peers, ' ')
+    } elsif is_array( $docker_cluster_peers ) {
+      $peers = $docker_cluster_peers
+    }
+    weave::firewall::listen_to_peer { $peers: }
   }
 
 }
