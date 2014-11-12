@@ -19,9 +19,9 @@ define weave::simple::run ( $host_name ){
   
   $image = $dhcp["$host_name"]['image']  
   validate_string( $image )  
-  notify { 'the_image_is':  
-    message => "The $host_name host uses the $image image.",  
-  }  
+  # notify { 'the_image_is':  
+  #   message => "The $host_name host uses the $image image.",  
+  # }  
   
   $build_options = hiera("$image")  
   if ! is_hash( $build_options ) {  
