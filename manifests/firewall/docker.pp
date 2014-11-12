@@ -42,6 +42,7 @@ class weave::firewall::docker {
           table => 'nat',
        dst_type => 'LOCAL',
           chain => 'OUTPUT',
+          proto => 'all',
     destination => '! 127.0.0.1/8',
            jump => 'DOCKER',
   }

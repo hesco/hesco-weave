@@ -6,9 +6,20 @@ class weave::firewall::weave {
 
   ### > -A POSTROUTING -j WEAVE
   firewall { '00101 nat table, POSTROUTING chain jumped to WEAVE chain':
-          table => 'nat',
-          chain => 'POSTROUTING',
-           jump => 'WEAVE',
+    table => 'nat',
+    chain => 'POSTROUTING',
+    proto => 'all',
+     jump => 'WEAVE',
+  }
+
+  ### -A FORWARD -i weave -o weave -j ACCEPT
+  firewall { '00101 permit FORWARDED packets over weave bridge':
+       table => 'filter',
+       chain => 'FORWARD',
+     iniface => 'weave',
+    outiface => 'weave',
+       proto => 'all',
+      action => 'accept',
   }
 
   if is_ip_address( $weave_router_ip ) {
@@ -40,7 +51,7 @@ class weave::firewall::weave {
         table => 'nat',
         chain => 'DOCKER',
         proto => 'tcp',
-    # iniface => '! docker0',
+      iniface => '! docker0',
         dport => '6783',
          jump => 'DNAT',
        todest => "$weave_router_ip:6783",
@@ -51,7 +62,7 @@ class weave::firewall::weave {
         table => 'nat',
         chain => 'DOCKER',
         proto => 'udp',
-    # iniface => '! docker0',
+      iniface => '! docker0',
         dport => '6783',
          jump => 'DNAT',
        todest => "$weave_router_ip:6783",
@@ -59,7 +70,7 @@ class weave::firewall::weave {
 
   }
 
-  notify { "Next we MASQUERADE traffic for $network_weave ": }
+  # notify { "Next we MASQUERADE traffic for $network_weave ": }
   if is_ip_address( $network_weave ) {
 
     ### > -A WEAVE ! -s 10.0.1.0/24 -o weave -j MASQUERADE
@@ -67,7 +78,8 @@ class weave::firewall::weave {
          table => 'nat',
          chain => 'WEAVE',
         source => "! $network_weave/24",
-    # outiface => 'weave',
+      outiface => 'weave',
+         proto => 'all',
           jump => 'MASQUERADE',
     }
 
@@ -76,7 +88,8 @@ class weave::firewall::weave {
          table => 'nat',
          chain => 'WEAVE',
         source => "$network_weave/24",
-    # outiface => '! weave',
+      outiface => '! weave',
+         proto => 'all',
           jump => 'MASQUERADE',
     }
 
