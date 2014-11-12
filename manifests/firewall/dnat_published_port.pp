@@ -5,7 +5,12 @@
 # -A FORWARD -d 172.17.0.2/32 ! -i docker0 -o docker0 -p tcp -m tcp --dport 25 -j ACCEPT
 # -A DOCKER -d 68.168.146.146/32 ! -i docker0 -p tcp -m tcp --dport 25 -j DNAT --to-destination 172.17.0.2:25
 
-define weave::firewall::dnat_published_port ( $container_ip, $published_port, $protocol, $public_ip ) {
+define weave::firewall::dnat_published_port (
+  $container_ip,
+  $published_port,
+  $protocol,
+  $public_ip = undef,
+) {
 
   $rule_id = sprintf("%05d",$published_port)
 
