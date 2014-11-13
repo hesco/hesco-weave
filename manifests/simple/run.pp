@@ -1,4 +1,57 @@
 
+# == Type: weave::simple::run
+#
+# defined type to wrap weave::run's five required arguments with one, keyed to hiera hash
+#
+# === Parameters
+#
+# [host_name]
+# a fully qualified host name is recommended, should be a key in hiera data's 
+# dockerhosts_dhcp hash, with its own ip and image keys.  
+#
+# === Variables
+#
+# This defined type expects the following to be set in hiera:
+#
+# /etc/puppet/hieradata/dhcp.yaml -- 
+#
+# [*dockerhosts_dhcp::$host_name::ip*]
+# an IP in dot-quad/cidr format on the weave bridge to be assigned to the container
+#
+# [*dockerhosts_dhcp::$host_name::image*]
+# the name of the docker image to be used to run the container
+#
+# /etc/puppet/hieradata/docker_build_options.yaml -- 
+#
+# [*image::ports*]
+# a yaml array of ports to attach, in the form:
+# 	- '-p 8140:8140'
+#
+# [*image::docker_run_options*]
+# a yaml array of options to be fed to `docker run`, for example:
+#	- '--memory=1g'
+#	- '--restart=always'
+#	- '--net=bridge'
+#	- '--name="DOMAIN"'
+#	- '-h DOMAIN'
+#
+# [*image::attach_volumes*]
+# a yaml array of volumes to attach to the container, for example:
+#	- "-v /data/etc/apache2/DOMAIN:/etc/apache2 "
+#	- "-v /data/etc/puppet/DOMAIN:/etc/puppet "
+#	- "-v /data/var/log/apache2/DOMAIN:/var/log/apache2 "
+#	- "-v /data/var/log/puppet/DOMAIN:/var/log/puppet "
+#
+# For a more complete example, see the README.md file.
+# 
+# === Authors
+#
+# Hugh Esco <hesco@yourmessagedelivered.com> 
+#
+# === Copyright
+#
+# Copyright 2014 Hugh Esco, YMD Partners 
+
 define weave::simple::run ( $host_name ){  
   
   $docker = hiera('weave::docker', '/usr/bin/docker')  

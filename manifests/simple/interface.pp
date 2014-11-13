@@ -1,3 +1,34 @@
+# == Type: weave::simple::interface
+#
+# defined type to wrap weave::interface's three required arguments with two, keyed to hiera hash
+#
+# === Parameters
+#
+# [host_name]
+# a fully qualified host name is recommended, should be a key in hiera data's 
+# dockerhosts_dhcp hash, with its own ip key.  
+#
+# [ensure]
+# supports 'present' and 'absent'
+#
+# === Variables
+#
+# This defined type expects the following to be set in hiera:
+#
+# /etc/puppet/hieradata/dhcp.yaml -- 
+#
+# [*dockerhosts_dhcp::$host_name::ip*]
+# an IP in dot-quad/cidr format on the weave bridge to be assigned to the container
+#
+# For a more complete example, see the README.md file.
+# 
+# === Authors
+#
+# Hugh Esco <hesco@yourmessagedelivered.com> 
+#
+# === Copyright
+#
+# Copyright 2014 Hugh Esco, YMD Partners
 
 define weave::simple::interface ( $host_name, $ensure ) {
 
