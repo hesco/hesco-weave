@@ -11,19 +11,28 @@ define weave::launch (
   $weave = getvar('weave::weave')
   $weave_container = getvar('weave::weave_container')
 
+  # notify { "debug": message => "docker: $docker; weave: $weave; weave container: $weave_container" }
+  exec { "reset_weave_for_$docker_host_weave_ip":
+    command => "$weave reset ",
+     unless => "$docker ps -a | /bin/grep $weave_container | /bin/grep -q -v Exited ",
+     notify => Exec["weave_launch_$docker_host_weave_ip"],
+  }
+
   exec { "weave_launch_$docker_host_weave_ip":
-    command => "$weave launch $docker_host_weave_ip $docker_cluster_peers ",
-     unless => "$docker inspect -f '{{ .Image }}' $weave_container 2>&1 | /bin/grep -v '^Error\|<no value>' -q",
+    command => "$weave launch $docker_cluster_peers ",
+     unless => "$docker inspect -f '{{ .Image }}' $weave_container 2>&1 | /bin/grep -q -v ^Error ",
     timeout => 600,
   }
 
-  exec { "restart_weave_for_$docker_host_weave_ip":
-    command => "$weave reset && $weave launch $docker_host_weave_ip $docker_cluster_peers ",
-     unless => "$docker ps -a | /bin/grep $weave_container | /bin/grep -v Exited -q",
-  }
-
   if $weave_manage_firewall {
-    include weave::firewall
+    include weave::firewall::docker
+    include weave::firewall::weave
+    if is_string( $docker_cluster_peers ){
+      $peers = split($docker_cluster_peers, ' ')
+    } elsif is_array( $docker_cluster_peers ) {
+      $peers = $docker_cluster_peers
+    }
+    weave::firewall::listen_to_peer { $peers: }
   }
 
 }

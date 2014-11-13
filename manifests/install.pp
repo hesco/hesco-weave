@@ -34,11 +34,15 @@ class weave::install (
 
   if member(['absent','purged'], $ensure){ 
 
-    exec { 'docker_rm_weave_container':
-      command => "$docker stop $weave_container && $docker rm $weave_container",
+    exec { "docker_rm_weave_container_for_ensure_$ensure":
+      command => "$weave reset && $docker stop $weave_container && $docker rm $weave_container",
     }
 
-    notify { "ensure is $ensure": }
+    if $ensure == 'purged' {
+      exec { 'docker_rmi_weave_image_for_ensure_purged':
+        command => "$docker rmi $weave_image/$weave_image_tag",
+      }
+    }
 
   }
 

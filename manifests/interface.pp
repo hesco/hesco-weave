@@ -23,7 +23,7 @@ define weave::interface ( $ensure, $ip, $container ) {
       command => "$weave attach $ip $container ",
        unless => "/usr/local/bin/test_docker_container_for_ethwe -c $container -i $ip -a",
       require => [ Exec["weave_launch_$docker_host_weave_ip"],
-                   Exec["restart_weave_for_$docker_host_weave_ip"] ],
+                   Exec["reset_weave_for_$docker_host_weave_ip"] ],
     }
 
   } elsif $ensure == 'absent' {
@@ -32,7 +32,7 @@ define weave::interface ( $ensure, $ip, $container ) {
       command => "$weave detach $ip $container ",
        unless => "/usr/local/bin/test_docker_container_for_ethwe -c $container -i $ip -d",
       require => [ Exec["weave_launch_$docker_host_weave_ip"],
-                   Exec["restart_weave_for_$docker_host_weave_ip"] ],
+                   Exec["reset_weave_for_$docker_host_weave_ip"] ],
     }
 
   } else {
