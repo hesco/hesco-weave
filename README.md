@@ -15,10 +15,10 @@
         * [Manage state for containers on a docker host](#manage-state-for-containers-on-a-docker-host)
         * [Manages firewall on a docker host](#manages-firewall-on-a-docker-host)
     * [Setting up hiera data](#setting-up-hiera)
-        * [/etc/puppet/hiera.yaml]()
-        * [/etc/puppet/hieradata/dhcp.yaml]()
-        * [/etc/puppet/hieradata/docker_build_options.yaml]()
-        * [/etc/puppet/hieradata/nodes/dockerhost001.example.com.yaml]()
+        * [/etc/puppet/hiera.yaml](#etcpuppethierayaml)
+        * [/etc/puppet/hieradata/dhcp.yaml](#etcpuppethieradatadhcpyaml)
+        * [/etc/puppet/hieradata/docker_build_options.yaml](#etcpuppethieradatadocker_build_optionsyaml)
+        * [/etc/puppet/hieradata/nodes/dockerhost001.example.com.yaml](#etcpuppethieradatanodesdockerhost001examplecomyaml)
     * [The base weave:: classes and types](#the-base-weave-defined-types-and-classes)
         * [Use weave::run to configure containers](#use-weaverun-type-to-configure-containers)
         * [Use weave::interface - enforce ethwe state on containers](#use-weaveinterface-to-enforce-ethwe-state-on-containers)
@@ -123,7 +123,13 @@ also requires [being patched as described in this pull request](https://github.c
 
 ## What weave affects
 
-`weave::install` --
+`weave` -- 
+This is your public access to the weave::install_* and weave::launch private classes.  
+
+`weave::install_docker` --
+purges existing iptables ruleset and invokes docker class to install and daemonize docker
+
+`weave::install_weave` --
 installs packages for `ethtool` and `conntrack`
 deploys a pinned version of `/usr/local/bin/weave`
 Read the source for instructions on upgrading the weave script
@@ -136,20 +142,37 @@ reset and restart the weave container if it crashes
 
 `weave::run` --
 invokes `weave run` which wraps `docker run` to deploy a docker container from an image
-creates weave interfaces, uses them to attach a container to the weave bridge
+creates weave interfaces, uses them to attach a container to the weave bridge, and assign 
+a user designated IP on the weave network to the ethwe interface
 
 `weave::interface` --
 enforces state (present and absent, supported) for an ethwe interface on a container
 this defined type can be used to retroactively attach existing docker containers to a new weave router
 
 `weave::expose_docker_host_to_weave` -- 
-runs `weave expose` to add an IP routable from the weave bridge to the weave interface on the docker host.
+runs `weave expose` to add an IP routable from the weave bridge to the weave interface on the docker host, 
+permitting the host to communicate with its hosted virtualized containers using the weave bridge.
 
 `weave::simple::run` --
 Provides a leaner interface to wrap weave::run and depends on hiera data.
 
 `weave::simple::interface` --
 Provides a leaner interface to wrap weave::interface and depends on hiera data.
+
+`firewall::docker.pp` --
+Class to replicate docker generated iptables rule set, under management by puppetlabs/firewall.
+
+`firewall::weave.pp` --
+Class to replicate weave generated iptables rule set, under management by puppetlabs/firewall.
+
+`firewall::listen_to_peer.pp` --
+Type to open port 6783 on INGRESS and EGRESS chains to a docker host designated 
+as a peer on weave network.
+
+`firewall::dnat_published_port.pp` --
+Type permitting one to FORWARD and MASQUERADE -p(ublished) container ports 
+across the docker bridge so that public internet traffic gets to and back 
+from docker containers.  
 
 # USAGE
 
@@ -242,7 +265,7 @@ in profile::docker_weave, along with the following hiera settings, handles the i
 (and uninstall) of the `zettio/weave` script and its supporting docker image, used to build 
 a docker container hosting an SDN router.
 
-### my /etc/puppet/hiera.yaml --
+### /etc/puppet/hiera.yaml
 
     ---
     :backends:
@@ -257,7 +280,7 @@ a docker container hosting an SDN router.
       - "env/%{environment}"
       - global
 
-### my /etc/puppet/hieradata/dhcp.yaml --
+### /etc/puppet/hieradata/dhcp.yaml
 
     ---
 
@@ -302,7 +325,7 @@ be used as arguments to the `weave::simple::*` types, which will pull and
 validate this hiera data, and use the image value as a key to access the data 
 from the docker_build_options.yaml hiera data described next.  
 
-### /etc/puppet/hieradata/docker_build_options.yaml --
+### /etc/puppet/hieradata/docker_build_options.yaml
 
     ---
 
@@ -364,7 +387,7 @@ to use ithe docker bridge to manage the containers from the docker hosts,
 even while I intend to use the weave bridge for inter-container communication, 
 particularly cross-docker-hosts.  
 
-### /etc/puppet/hieradata/nodes/dockerhost001.example.com.yaml --
+### /etc/puppet/hieradata/nodes/dockerhost001.example.com.yaml
 
     ---
 
@@ -461,13 +484,15 @@ the components will play well together.
 This feature is dependent on the [puppetlabs/firewall](https://forge.puppetlabs.com/puppetlabs/firewall) 
 module available from the puppet forge.  In addition, it requires a [patch described here](https://tickets.puppetlabs.com/browse/MODULES-1470), 
 to the puppetlabs/firewall module and included in [this pending pull request](https://github.com/puppetlabs/puppetlabs-firewall/pull/433).  
+
 This pull request supports the negation of an -i or -o interface switch in an iptables rule, 
 actually the iniface and outiface attributes to the Firewall[] resource, which translates 
 into the -i and -o switches on an iptables rule, respectively.  Hopefully that pull 
 request will soon make it into the upstream project and when that has happened, 
 this feature should work without patching a future version of the firewall module.  
-(although not necessary for weave::firewall::, this patch will also support 
-interface aliases).  
+
+Although not necessary for weave::firewall::, this patch will also support 
+interface aliases, useful for assigning multiple IPs to the same physical nic.  
 
 Use of this feature is enabled by setting 'weave::manage_firewall' to a true value in 
 your hiera data.  
