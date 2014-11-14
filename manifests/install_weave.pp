@@ -1,5 +1,5 @@
 
-class weave::install (
+class weave::install_weave (
   $ensure = $weave::params::ensure,
   $weave = $weave::params::weave,
   $docker = $weave::params::docker,
@@ -30,6 +30,7 @@ class weave::install (
   docker::image { "$weave_image":
        ensure => $ensure,
     image_tag => $weave_image_tag,
+      require => Class['docker'],
   }
 
   if member(['absent','purged'], $ensure){ 

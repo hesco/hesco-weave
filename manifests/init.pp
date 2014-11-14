@@ -101,13 +101,13 @@ class weave (
   $weave_container       = $weave::params::weave_container,
   $weave_image           = $weave::params::weave_image,
   $weave_image_tag       = $weave::params::weave_image_tag,
-  $weave_manage_firewall = $weave::params::weave_manage_iptables,
+  $weave_manage_firewall = $weave::params::weave_manage_firewall,
 
 ) inherits weave::params {
 
   include stdlib
   # include firewall
-  include  docker
+  # include  docker
 
   validate_absolute_path( $weave )
   validate_absolute_path( $docker )
@@ -120,11 +120,12 @@ class weave (
 
   # notify { 'running weave::init': }
   anchor { 'weave::begin': } ->
-  class { 'weave::install': } ->
+  class { 'weave::install_docker': } ->
+  class { 'weave::install_weave': } ->
   weave::launch { "$docker_host_weave_ip":
      docker_host_weave_ip => $docker_host_weave_ip,
      docker_cluster_peers => $docker_cluster_peers,
-    weave_manage_firewall => $weave_manage_iptables,
+    weave_manage_firewall => $weave_manage_firewall,
   } ~>
   anchor { 'weave::end': }
 
