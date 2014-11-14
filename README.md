@@ -623,18 +623,18 @@ items might belong there.  Lets see if working together we can turn this into so
 
 RESOLVED: [hesco-weave #1](../../issues/1), FEATURE -- weave::firewall::\* 
 
-[hesco-weave #2](../../issues/2) I want to permit the `weave::docker_cluster_peers` 
-key to accept either a space delimited string or a yaml array, and have it do the 
-right thing either way.
-
 RESOLVED: [hesco-weave #4](../../issues/4), FEATURE -- $::docker_hosted_containers fact.
 
 RESOLVED: [hesco-weave #6](../../issues/6), FEATURE -- weave::simple::(run|interface) wrapper types.
 
+### Features planned for future releases
+
+[hesco-weave #2](../../issues/2) I want to permit the `weave::docker_cluster_peers` 
+key to accept either a space delimited string or a yaml array, and have it do the 
+right thing either way.
+
 [hesco-weave #8](../../issues/8): BUG: Exclude local IP from peers array for weave::launch
 While not a fatal error, it does provide for noisy logs.  
-
-### Features planned for future releases
 
 [hesco-weave #3](../../issues/3), I want to add some additional custom 
 `Facter::facts` to expose the containers and network hosted on the weave 
