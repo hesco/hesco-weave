@@ -11,22 +11,26 @@
 5. [Usage - Configuration options and additional functionality](#usage)
     * [Organizing role::docker_host](#organizing-the-docker_host-role)
     * [Setting up hiera data](#setting-up-hiera)
-    * [Use weave::run to configure containers](#use-weave-run-type-to-configure-containers)
-    * [Use weave::interface - enforce ethwe state on containers](#use-weave-interface)
-    * [Use weave::expose_docker_host_to_weave](#use-weave-expose-docker-host-to-weave)
-    * [Use weave::simple::run to leverage hiera](#use-weave-simple-run)
-    * [Use weave::simple::interface to leverage hiera](#use-weave-simple-interface)
-    * [Use weave::firewall - manage docker host firewall for weave](#use-weave-firewall) # PENDING
-    * [Use weave::firewall::docker](#use-weave-firewall-docker)
-    * [Use weave::firewall::weave](#use-weave-firewall-weave)
-    * [Use weave::firewall::dnat_published_port](#use-weave-firewall-dnat_published_port)
-    * [Use weave::firewall::listen_to_peer](#use-weave-firewall-listen_to_peer)
+    * [Use weave::run to configure containers](#use-weaverun-type-to-configure-containers)
+    * [Use weave::interface - enforce ethwe state on containers](#use-weaveinterface-to-enforce-ethwe-state-on-containers)
+    * [Use weave::expose_docker_host_to_weave](#use-weaveexpose_docker_host_to_weave)
+    * [Use weave::simple::run to leverage hiera](#use-weavesimplerun-to-leverage-hiera)
+    * [Use weave::simple::interface to leverage hiera](#use-weavesimpleinterface-to-leverage-hiera)
+    * [Use weave::firewall - manage docker host firewall for weave](#use-weavefirewall---manage-docker-host-firewall-for-weave) # PENDING
+    * [Use weave::firewall::docker](#use-weavefirewalldocker)
+    * [Use weave::firewall::weave](#use-weavefirewallweave)
+    * [Use weave::firewall::dnat_published_port](#use-weavefirewalldnat_published_port)
+    * [Use weave::firewall::listen_to_peer](#use-weavefirewalllisten_to_peer)
 6. [Facts](#facts-exposed-by-module)
+    * [$::weave_router_ip_on_docker_bridge](#weave_router_ip_on_docker_bridge)
+    * [$::docker_hosted_containers](#docker_hosted_containers)
 7. [Reference - An under-the-hood peek at what the module is doing and how](#reference) # PENDING
 8. [Limitations - Caveats, OS compatibility, etc.](#limitations)
 9. [Development - Guide for contributing to the module](#development)
 10. [To-Do](#to-do)
     * [To-Do tasks for hesco-weave](#to-do-tasks-for-hesco-weave)
+        * [Roadmap for version 0.8.x release]()
+        * [Features slated for future releases]()
     * [To-Do tasks for other projects](#to-do-tasks-for-other-projects)
 11. [Copyright and License](#copyright-and-license)
 
@@ -562,7 +566,7 @@ turn this into something useful.
 
 ## To-Do tasks for hesco-weave 
 
-On the roadmap for the 0.8.x release -- 
+### On the roadmap for the 0.8.x release -- 
 
 [hesco-weave #1](../../issues/1) The `weave::install` manifest needs to use 
 [puppetlabs-firewall](https://forge.puppetlabs.com/puppetlabs/firewall) 
@@ -579,7 +583,7 @@ RESOLVED: [hesco-weave #6](../../issues/6), FEATURE -- weave::simple::(run|inter
 [hesco-weave #8](../../issues/8): BUG: Exclude local IP from peers array for weave::launch
 While not a fatal error, it does provide for noisy logs.  
 
-to be addressed in future releases -- 
+### Features planned for future releases -- 
 
 [hesco-weave #3](../../issues/3), I want to add some additional custom 
 `Facter::facts` to expose the containers and network hosted on the weave 
