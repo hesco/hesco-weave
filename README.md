@@ -159,17 +159,17 @@ Provides a leaner interface to wrap weave::run and depends on hiera data.
 `weave::simple::interface` --
 Provides a leaner interface to wrap weave::interface and depends on hiera data.
 
-`firewall::docker.pp` --
+`weave::firewall::docker` --
 Class to replicate docker generated iptables rule set, under management by puppetlabs/firewall.
 
-`firewall::weave.pp` --
+`weave::firewall::weave.pp` --
 Class to replicate weave generated iptables rule set, under management by puppetlabs/firewall.
 
-`firewall::listen_to_peer.pp` --
+`weave::firewall::listen_to_peer --
 Type to open port 6783 on INGRESS and EGRESS chains to a docker host designated 
 as a peer on weave network.
 
-`firewall::dnat_published_port.pp` --
+`weave::firewall::dnat_published_port` --
 Type permitting one to FORWARD and MASQUERADE -p(ublished) container ports 
 across the docker bridge so that public internet traffic gets to and back 
 from docker containers.  
@@ -236,6 +236,10 @@ module and perhaps elsewhere in my internal codebase.
         .  .  .  
 
     }
+
+The puppetlabs/firewall module encourages one to keep the firewall rules close to the configuration 
+for the application it supports, so postfix::iptables will open ports 25 and 587 without worrying 
+about the ssh daemon and your database.  
 
     class my_docker::iptables {
     
@@ -414,13 +418,13 @@ which now wraps this with hiera data and a narrower interface.
 
     weave::run { "weave run $host_name at $ip":
          host => $container_name,
-           ip => $ip,
+           ip => $weave_routable_ip/cidr,
         image => $image,
       options => $options
     }
 
-The host key in this invocation was new to version v0.7.2 and was necessary to resolve the 
-[bug described here](../../issues/7).
+For the early adopters, the host key in this invocation was new to version v0.7.2 
+and was necessary to resolve the [bug described here](../../issues/7).
 
 Under the hood `weave::run` is calling the `weave` script which wraps a call to `docker run` with 
 additional bash code to plumb the weave network on to the docker container and into the docker hosts 
@@ -433,7 +437,7 @@ with `docker run` rather than `weave run` or the methods exposed by this module:
  
     weave::interface { "Ensure ethwe (bound to $ip) $ensure on $host_name":
          ensure => $ensure,
-             ip => $ip,
+             ip => $weave_routable_ip/cidr,
       container => $host_name,
     }
 
