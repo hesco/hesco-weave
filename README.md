@@ -248,17 +248,10 @@ about the ssh daemon and your database.
     
       $peers = hiera( 'weave::docker_cluster_peers_array', undef )
     
-      if $::ipaddress_eth0 != 'this.peers.public.ipaddr' {
-        weave::firewall::listen_to_peer { "weave_listen_to_peer_this.peers.public.ipaddr": peer => 'this.peers.public.ipaddr' }
-      }
-    
-      if $::ipaddress_eth0 != 'that.peers.public.ipaddr' {
-        weave::firewall::listen_to_peer { "weave_listen_to_peer_that.peers.public.ipaddr": peer => 'that.peers.public.ipaddr' }
-      }
-    
-      if $::ipaddress_eth0 != 'some_other.peers.public.ipaddr' {
-        weave::firewall::listen_to_peer { "weave_listen_to_peer_some_other.peers.public.ipaddr": peer => 'some_other.peers.public.ipaddr' }
-      }
+      # defined type includes sanity check Notify[no firewall rules required for self], testing eth0
+      weave::firewall::listen_to_peer { "weave_listen_to_peer_this.peers.public.ipaddr": peer => 'this.peers.public.ipaddr' }
+      weave::firewall::listen_to_peer { "weave_listen_to_peer_that.peers.public.ipaddr": peer => 'that.peers.public.ipaddr' }
+      weave::firewall::listen_to_peer { "weave_listen_to_peer_some_other.peers.public.ipaddr": peer => 'some_other.peers.public.ipaddr' }
     
     }
 
