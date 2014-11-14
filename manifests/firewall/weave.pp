@@ -12,7 +12,7 @@ class weave::firewall::weave {
      jump => 'WEAVE',
   }
 
-  ### -A FORWARD -i weave -o weave -j ACCEPT
+  ### > -A FORWARD -i weave -o weave -j ACCEPT
   firewall { '00101 permit FORWARDED packets over weave bridge':
        table => 'filter',
        chain => 'FORWARD',

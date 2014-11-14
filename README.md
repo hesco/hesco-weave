@@ -9,18 +9,28 @@
     * [Setup requirements](#setup-requirements)
     * [What weave affects](#what-weave-affects)
 5. [Usage - Configuration options and additional functionality](#usage)
-    * [Organizing role::docker_host](#organizing-the-docker_host-role)
+    * [Organizing your puppet manifests](#organizing-your-puppet-manifests)
+        * [The role::docker_host](#the-docker_host-role)
+        * [the docker_weave profile ](#the-docker_weave-profile)
+        * [Manage state for containers on a docker host](#manage-state-for-containers-on-a-docker-host)
+        * [Manages firewall on a docker host](#manages-firewall-on-a-docker-host)
     * [Setting up hiera data](#setting-up-hiera)
-    * [Use weave::run to configure containers](#use-weaverun-type-to-configure-containers)
-    * [Use weave::interface - enforce ethwe state on containers](#use-weaveinterface-to-enforce-ethwe-state-on-containers)
-    * [Use weave::expose_docker_host_to_weave](#use-weaveexpose_docker_host_to_weave)
-    * [Use weave::simple::run to leverage hiera](#use-weavesimplerun-to-leverage-hiera)
-    * [Use weave::simple::interface to leverage hiera](#use-weavesimpleinterface-to-leverage-hiera)
-    * [Use weave::firewall - manage docker host firewall for weave](#use-weavefirewall---manage-docker-host-firewall-for-weave) # PENDING
-    * [Use weave::firewall::docker](#use-weavefirewalldocker)
-    * [Use weave::firewall::weave](#use-weavefirewallweave)
-    * [Use weave::firewall::dnat_published_port](#use-weavefirewalldnat_published_port)
-    * [Use weave::firewall::listen_to_peer](#use-weavefirewalllisten_to_peer)
+        * [/etc/puppet/hiera.yaml]()
+        * [/etc/puppet/hieradata/dhcp.yaml]()
+        * [/etc/puppet/hieradata/docker_build_options.yaml]()
+        * [/etc/puppet/hieradata/nodes/dockerhost001.example.com.yaml]()
+    * [The base weave:: classes and types](#the-base-weave-defined-types-and-classes)
+        * [Use weave::run to configure containers](#use-weaverun-type-to-configure-containers)
+        * [Use weave::interface - enforce ethwe state on containers](#use-weaveinterface-to-enforce-ethwe-state-on-containers)
+        * [Use weave::expose_docker_host_to_weave](#use-weaveexpose_docker_host_to_weave)
+    * [Use weave::simple:: to leverage hiera data](#use-weavesimple-to-leverage-hiera-data)
+        * [Use weave::simple::run narrows interface to weave::run](#use-weavesimplerun-to-leverage-hiera)
+        * [Use weave::simple::interface narrows interface to weave::interface](#use-weavesimpleinterface-to-leverage-hiera)
+    * [Use weave::firewall - manage docker host firewall for weave](#use-weavefirewall---manage-docker-host-firewall-for-weave)
+        * [Use weave::firewall::docker](#use-weavefirewalldocker)
+        * [Use weave::firewall::weave](#use-weavefirewallweave)
+        * [Use weave::firewall::dnat_published_port](#use-weavefirewalldnat_published_port)
+        * [Use weave::firewall::listen_to_peer](#use-weavefirewalllisten_to_peer)
 6. [Facts](#facts-exposed-by-module)
     * [$::weave_router_ip_on_docker_bridge](#weave_router_ip_on_docker_bridge)
     * [$::docker_hosted_containers](#docker_hosted_containers)
@@ -29,8 +39,8 @@
 9. [Development - Guide for contributing to the module](#development)
 10. [To-Do](#to-do)
     * [To-Do tasks for hesco-weave](#to-do-tasks-for-hesco-weave)
-        * [Roadmap for version 0.8.x release]()
-        * [Features slated for future releases]()
+        * [Roadmap for version 0.8.x release](#on-the-roadmap-for-the-08x-release)
+        * [Features slated for future releases](#features-planned-for-future-releases)
     * [To-Do tasks for other projects](#to-do-tasks-for-other-projects)
 11. [Copyright and License](#copyright-and-license)
 
@@ -103,9 +113,9 @@ Read `puppet help module install` for other useful options.
 If you install this from the git repository rather than from the forge,
 dependencies must be managed manually.  This module requires:
 
+    - [garethr/docker](https://forge.puppetlabs.com/garethr/docker)
     - [puppetlabs/stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
     - [puppetlabs/firewall](https://forge.puppetlabs.com/puppetlabs/firewall)
-    - [garethr/docker](https://forge.puppetlabs.com/garethr/docker)
 
 The firewall module is intended to support features exposed by weave::firewall:: classes 
 and types.  Until such time as the pull request is accepted into the upstream project, it 
@@ -143,11 +153,15 @@ Provides a leaner interface to wrap weave::interface and depends on hiera data.
 
 # USAGE
 
-## Organizing the docker_host role
+## Organizing your puppet manifests
+
+### the docker_host role
 
 My docker_host role class, looks like this:
 
     class role::docker_host { include profile::docker_weave }
+
+### the docker_weave profile 
 
 The `docker_weave` profile uses the `garethr/docker` module to install docker.
 The garethr module also exposes a couple of defined types used in the weave
@@ -157,33 +171,22 @@ module and perhaps elsewhere in my internal codebase.
 
       $fqdn_normalized = regsubst($fqdn,'\.','_',"G")
         .  .  .  
-      include my_docker
-      # <-- install prerequisites, utilities, helper scripts, Dockerfile(s)
-      include "docker_cluster::hosts::${fqdn_normalized}"
-      # <-- manages state for containers on a particular docker host
-      include "docker_cluster::ipitables::${fqdn_normalized}"
-      # <-- manages firewall on a particular docker host
-
-    }
-
-    class my_docker {
-
-      include my_docker::prereqs
-      include my_docker::prereqs::utilities
-      include my_docker::helper_scripts
-
       include docker
       # <-- garethr/docker
       include weave
       # <-- this hesco/weave module
-
       include weave::expose_docker_host_to_weave
+
+      include "docker_cluster::hosts::${fqdn_normalized}"
+      include "docker_cluster::ipitables::${fqdn_normalized}"
 
     }
 
+### Manage state for containers on a docker host
+
     class docker_cluster::hosts::dockerhost001_example_com {
 
-      include docker_cluster::db_servers::samora_pg
+      include docker_cluster::db_servers::pg
       include docker_cluster::web_servers::rt
         .  .  .  
 
@@ -195,6 +198,8 @@ module and perhaps elsewhere in my internal codebase.
       weave::simple::interface { 'rt.example.com ethwe interface': host_name => 'rt.example.com', ensure => 'present' }
 
     }
+
+### Manages firewall on a docker host
 
     class docker_cluster::iptables::dockerhost001_example_com {
 
@@ -237,7 +242,7 @@ in profile::docker_weave, along with the following hiera settings, handles the i
 (and uninstall) of the `zettio/weave` script and its supporting docker image, used to build 
 a docker container hosting an SDN router.
 
-my /etc/puppet/hiera.yaml --
+### my /etc/puppet/hiera.yaml --
 
     ---
     :backends:
@@ -252,7 +257,7 @@ my /etc/puppet/hiera.yaml --
       - "env/%{environment}"
       - global
 
-my /etc/puppet/hieradata/dhcp.yaml --
+### my /etc/puppet/hieradata/dhcp.yaml --
 
     ---
 
@@ -292,7 +297,12 @@ my /etc/puppet/hieradata/dhcp.yaml --
         host: dockerhost002
      # additional key->hash definition for each container
 
-/etc/puppet/hieradata/docker_build_options.yaml --
+Note that in the dockerhost_dhcp hash, the keys are hostnames, which will 
+be used as arguments to the `weave::simple::*` types, which will pull and 
+validate this hiera data, and use the image value as a key to access the data 
+from the docker_build_options.yaml hiera data described next.  
+
+### /etc/puppet/hieradata/docker_build_options.yaml --
 
     ---
 
@@ -312,7 +322,7 @@ my /etc/puppet/hieradata/dhcp.yaml --
         - "-v /data/var/log/apache2/DOMAIN:/var/log/apache2 "
         - "-v /data/var/log/puppet/DOMAIN:/var/log/puppet "
 
-    samora_pg:
+    pg:
       ports:
         - '-p 5432:5432'
       docker_run_opts:
@@ -344,6 +354,9 @@ my /etc/puppet/hieradata/dhcp.yaml --
 
     # additional key->hash definition for each docker image type
 
+`weave::simple::run` will parse these `docker run` options from hiera and use 
+them to set up your containers.  The keys are image names, and this assumes that 
+you have previously used `docker build` to create these base images.  
 
 I have been advised that by deploying a weave network, I can now disable 
 the docker bridge, by setting `--net=none`.  But for the moment I continue 
@@ -351,7 +364,7 @@ to use ithe docker bridge to manage the containers from the docker hosts,
 even while I intend to use the weave bridge for inter-container communication, 
 particularly cross-docker-hosts.  
 
-my /etc/puppet/hieradata/nodes/dockerhost001.example.com.yaml --
+### /etc/puppet/hieradata/nodes/dockerhost001.example.com.yaml --
 
     ---
 
@@ -360,7 +373,16 @@ my /etc/puppet/hieradata/nodes/dockerhost001.example.com.yaml --
     # by $docker_hosts_weave_dhcp[n]['ip']
     weave::docker_host_weave_ip: '10.0.0.1/16'
 
-## use weave::run type to configure containers
+## The base weave:: defined types and classes
+
+This module includes several private classes used to manage the initial installation 
+configuration and launching of the weave SDN router (in a docker container), as well 
+as the docker daemon if that is not already present.  But as a module consumer you 
+really only need to know about this one class:  
+
+    include weave
+
+### use weave::run type to configure containers
 
 Originally this module exposed this defined type to wrap the `weave run` command 
 which runs a container given an image.  Its five required arguments seemed a bit 
@@ -381,7 +403,7 @@ Under the hood `weave::run` is calling the `weave` script which wraps a call to 
 additional bash code to plumb the weave network on to the docker container and into the docker hosts 
 firewall.  
 
-## use weave::interface to enforce ethwe state on containers
+### use weave::interface to enforce ethwe state on containers
 
 And to enforce state, or to retroactively attach existing containers launched 
 with `docker run` rather than `weave run` or the methods exposed by this module:
@@ -392,24 +414,29 @@ with `docker run` rather than `weave run` or the methods exposed by this module:
       container => $host_name,
     }
 
-## Use weave::expose_docker_host_to_weave
+### Use weave::expose_docker_host_to_weave
 
 This class executes the `weave expose` command to assign an IP address (from hiera) to the weave 
 interface, on the weave bridge, so that the docker host can communicate with containers hosted 
 by itself or by its peers attached to the weave bridge.  
 
-## Use weave::simple::run to leverage hiera
+## Use weave::simple:: to leverage hiera data
+
+The `weave::simple::*` defined types in general wrap the base types, providing a narrower interface 
+deriving the rest of the necessary arguments from hiera lookups and providing data validation.  If 
+you use hiera, these types will be easier to use than the base types.  
+
+### Use weave::simple::run to leverage hiera
 
 My `"docker_cluster::hosts::${fqdn_normalized}"` profile includes defined type 
 invocations which look like this:
 
     weave::simple::run { 'weave_run rt.example.com': host_name => 'rt.example.com' }
 
-That defined type wraps the `weave::run` type in sanity checks and data validation to ensure that 
-valid data is being passed from the hiera data store.  It requires only a single argument used 
-to key the rest of the data in the hiera data structure for the wrapped type.  
+This ::simple type requires only a single argument used to key the rest of the data 
+from the hiera data structure which is necessary for the wrapped `weave::run` type.  
 
-## Use weave::simple::interface to leverage hiera
+### Use weave::simple::interface to leverage hiera
 
 my `docker_cluster::hosts::${fqdn_normalized}` profile also now includes: 
 
@@ -418,21 +445,18 @@ my `docker_cluster::hosts::${fqdn_normalized}` profile also now includes:
          ensure => 'present',
     }
 
-Again, this is a defined type designed to munge the hiera data structure, apply sanity 
-checks and validation tests to data fed to the original three argument defined type 
-exposed by this module.  
+Wrapping `weave::interface` 
 
 ## Use weave::firewall - manage docker host firewall for weave
 
-Pending . . . 
+The use of the weave::firewall:: classes and types is optional and requires setting 
+a weave::mangage_firewall option in hiera.  
 
-Although code for this upcoming feature has been committed to the repository and is included 
-in this package, its use is currently suppressed.  Its use is optional and requires setting 
-a weave::mangage_firewall option in hiera.  This [feature](../../issues/1) requires some 
-additional debugging before being published as a release candidate, much less being used 
-for a production deployment.  Your patience or patches are appreciated, as I continue work 
-to enable puppet driven firewall management without breaking a reliable cross-docker-host 
-bridge under its use.  
+These features enable puppet driven firewall management without breaking a reliable 
+cross-docker-host bridge under its use.  It was motivated by the resistence of the 
+docker/weave iptables rule sets to playing well with a puppet managed firewall.  So 
+essentially this module will replicate what those tools do, in the puppet way, so all 
+the components will play well together.  
 
 This feature is dependent on the [puppetlabs/firewall](https://forge.puppetlabs.com/puppetlabs/firewall) 
 module available from the puppet forge.  In addition, it requires a [patch described here](https://tickets.puppetlabs.com/browse/MODULES-1470), 
@@ -442,6 +466,8 @@ actually the iniface and outiface attributes to the Firewall[] resource, which t
 into the -i and -o switches on an iptables rule, respectively.  Hopefully that pull 
 request will soon make it into the upstream project and when that has happened, 
 this feature should work without patching a future version of the firewall module.  
+(although not necessary for weave::firewall::, this patch will also support 
+interface aliases).  
 
 Use of this feature is enabled by setting 'weave::manage_firewall' to a true value in 
 your hiera data.  
@@ -462,7 +488,7 @@ locked out.
 (For the reasoning behind the five digit rule numbering convention, see [Alex Cline's 2011 
 "Advanced Firewall Manipulation Using Puppet"](http://alexcline.net/2012/03/16/advanced-firewall-manipulation-using-puppet/).  
 
-## Use weave::firewall::docker
+### Use weave::firewall::docker
 
 Docker depends on and manages its own Software Defined Network, using brctl (?) under the hood 
 to create a docker0 bridge, the ip utility (?) to create paired veth virtual interfaces, one 
@@ -477,16 +503,17 @@ firewall rules using puppetlabs/firewall module.
 
     include weave::firewall::docker
 
-## Use weave::firewall::weave
+### Use weave::firewall::weave
 
-Similarly, the weave command line script which comes packaged with the weave SDN router also 
-creates a handful of firewall rules added to the \*nat table, including its own WEAVE chain.  
-Inclusion of this class is intended to replicate those rules purged when weave::manage_firewall 
-is enabled.  In your docker/weave profile, you should also add this line:
+Similarly, the weave command line script which comes packaged with the weave SDN router (in a 
+docker container) also creates a handful of firewall rules added to the \*nat table, including 
+its own WEAVE chain.  Inclusion of this class is intended to replicate those rules purged when 
+weave::manage_firewall is enabled.  In your docker/weave profile, you should also add this class 
+like so:
 
     include weave::firewall::weave
 
-## Use weave::firewall::dnat_published_port
+### Use weave::firewall::dnat_published_port
 
 When you run a docker container with a published port (the -p switch to the `docker run` 
 command, perhaps with EXPOSE in your Dockerfile), docker will add a pair of rules to your 
@@ -503,12 +530,13 @@ Of the following arguments, all are required except for public_ip, which default
            public_ip => 'your.public.ip.addr',
     }
 
-## Use weave::firewall::listen_to_peer
+### Use weave::firewall::listen_to_peer
 
 Currently the weave command line script does not manage this for you, but its documentation 
 advises that you need to open up your firewall to permit tcp and udp packets between the 
 weave routers on your peer'd docker hosts.  This defined type exists to make that easy, 
-using the power of puppetlabs/firewall module underneath.  You can use it like so:
+using the power of puppetlabs/firewall module underneath to create appropriate INGRESS 
+and EGRESS rules.  You can use it like so:
 
     if $::ipaddress_eth0 != '<routable.ip_address.for.peered_docker_host>' {
       weave::firewall::listen_to_peer { "weave_listen_to_peer_<routable.ip_address.for.peered_docker_host>": peer => '<routable.ip_address.for.peered_docker_host>' }
@@ -551,26 +579,27 @@ and patches, particularly when they come in the form of a Pull Request, even if 
 patch this README.md to report on success or failure of this module in your environment.
 
 As of this writing, enabling the the weave::firewall:: functionality by setting weave::manage_firewall 
-in hiera breaks the weave bridge between docker hosts.  I am seeking advise from others to resolve 
-this bug before pushing a version 0.8.x release to the puppet forge.  
+in hiera only a day ago was still breaking the weave bridge between docker hosts.  After extensive 
+and pain-staking debugging till late last night, the bridge has been stable all day, and in the morning 
+I will begin the process of deploying my first production services to the environment this module manages 
+(which I continue to monitor closely).  I still consider this feature in the version 0.8.x release beta 
+quality.  It is offered with all of the usual disclaimers.  Caveat Emptor.  
 
 # DEVELOPMENT
 
-Please report bugs, feature requests and other issues or successful tests in other environments 
-at the [github site](../../issues), fork this code, add your test cases, patch it and send me 
-back a Pull Request.  Your contributions to the items on the to-do list are appreciated, as 
-well as your ideas about what items might belong there.  Lets see if working together we can 
-turn this into something useful.
+Please report bugs, feature requests, post your questions, issues and reports of successful 
+and failing tests in your environment at the [github site](../../issues).  Please feel free 
+to fork this code, add your test cases, patch it and send me back a Pull Request.  Your 
+contributions to the items on the to-do list are appreciated, as well as your ideas about what 
+items might belong there.  Lets see if working together we can turn this into something useful.
 
 # TO-DO
 
 ## To-Do tasks for hesco-weave 
 
-### On the roadmap for the 0.8.x release -- 
+### On the roadmap for the 0.8.x release
 
-[hesco-weave #1](../../issues/1) The `weave::install` manifest needs to use 
-[puppetlabs-firewall](https://forge.puppetlabs.com/puppetlabs/firewall) 
-to ensure that port 6783 is open for tcp and udp traffic among the docker hosts.  
+RESOLVED: [hesco-weave #1](../../issues/1), FEATURE -- weave::firewall::\* 
 
 [hesco-weave #2](../../issues/2) I want to permit the `weave::docker_cluster_peers` 
 key to accept either a space delimited string or a yaml array, and have it do the 
@@ -583,7 +612,7 @@ RESOLVED: [hesco-weave #6](../../issues/6), FEATURE -- weave::simple::(run|inter
 [hesco-weave #8](../../issues/8): BUG: Exclude local IP from peers array for weave::launch
 While not a fatal error, it does provide for noisy logs.  
 
-### Features planned for future releases -- 
+### Features planned for future releases
 
 [hesco-weave #3](../../issues/3), I want to add some additional custom 
 `Facter::facts` to expose the containers and network hosted on the weave 
