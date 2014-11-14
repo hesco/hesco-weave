@@ -95,27 +95,27 @@ which exposes a json hash of docker container host names => ip_addresses.
 
 # INSTALLATION
 
-For the time being, this module may be installed like so:
-
-    # cd /etc/puppet/modules
-    # git clone https://github.com/hesco/hesco-weave.git
-
-Now that [this module has been published to the puppet forge](https://forge.puppetlabs.com/hesco/weave),
-and at the risk of missing out on the latest and greatest and potentially less than stable changes, 
-it can be installed using puppet, like so:
+[This module has been published to the puppet forge](https://forge.puppetlabs.com/hesco/weave).
+and can be installed like so:
 
     # puppet module install -i /etc/puppet/modules hesco/weave
 
 Read `puppet help module install` for other useful options.
+
+For the latest and greatest and potentially less than stable changes, 
+you might consider cloning the bleeding edge of development as follows:
+
+    # cd /etc/puppet/modules
+    # git clone https://github.com/hesco/hesco-weave.git
 
 # Setup Requirements
 
 If you install this from the git repository rather than from the forge,
 dependencies must be managed manually.  This module requires:
 
-    - [garethr/docker](https://forge.puppetlabs.com/garethr/docker)
-    - [puppetlabs/stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
-    - [puppetlabs/firewall](https://forge.puppetlabs.com/puppetlabs/firewall)
+    * [garethr/docker](https://forge.puppetlabs.com/garethr/docker)
+    * [puppetlabs/stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
+    * [puppetlabs/firewall](https://forge.puppetlabs.com/puppetlabs/firewall)
 
 The firewall module is intended to support features exposed by weave::firewall:: classes 
 and types.  Until such time as the pull request is accepted into the upstream project, it 
