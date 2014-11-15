@@ -54,22 +54,30 @@ Version v0.7.45
 
 This is alpha code and no promises are made at this early stage as to the stability
 of its interface, or its suitability for production use.  The weave project is still
-less than seven weeks and four hundred commits old.  I myself am still testing it
-with the hope of putting it to use in my own environment.  I found it the least
-confusing interface I could find for bridging docker containers across multiple
-docker hosts.  But getting it to work in my environment has alrady demanded that
-I dig in to its innards and learn more about software defined networks than I knew
-before.
+less than three months and barely 900 commits old.  I myself after a month of testing 
+and integration with my own environment am on the verge of tagging the v0.8 release 
+of this project only now just beginning to roll out production services dependent 
+on the bridged network it provides.  
 
 # SYNOPSIS
 
-Puppet module for managing a weave network on a docker cluster
+hesco/weave is a puppet module for managing a weave network on a docker cluster
 
 Weave is a docker container hosted SDN router plus a shell script for managing an SDN
 on a docker cluster.  It is capable of bridging virtual networks across docker hosts,
 making it possible for containers deployed across different physical hosts (even in 
 different data centers) to communicate with one another.  To learn more about 
 [weave, click here](https://github.com/zettio/weave).
+
+I found it the least confusing interface I could find for bridging docker containers 
+across multiple docker hosts.  But getting it to work in my environment has alrady 
+demanded that I dig in to its innards and learn more about software defined networks 
+than I might have hoped as a developer who has always deferred to a 'real network 
+engineer' on those jobs where one has existed.  I am far more comfortable with the 
+subject than when I started, and have endevoured to embed what I have learned from 
+those subject matter experts who have been so kind as to answer my many question back 
+upstream to the weave project and into this module, so perhaps my future self and you 
+might not need to make the same deep dive into the subject.  
 
 Architecturally, to make this work, one will want to use docker to deploy a weave router
 using the [zettio/weave image from the Docker Hub](https://registry.hub.docker.com/u/zettio/weave/),
@@ -80,15 +88,15 @@ Then rather than using `docker run`, you will use the weave script's `weave run`
 to wrap docker with additional code to configure the Software Defined Network around an
 arbitrary docker container.
 
-This puppet module exposes in version 0.7.2, at still an early stage of its development 
+This puppet module exposed in version 0.7.2, at still an early stage of its development 
 three defined types: `weave::launch`, `weave::run` and `weave::interface` to make these 
 tools available from a puppet manifest.  It also manages the installation and uninstall 
 of weave, its docker hosted router and packaged dependencies.
 
 With version 0.8.x, this module will also add weave::simple::(run|interface) defined types, 
-which wrap the version 0.7.x types, with a more simple interface which relies on hiera 
+which wrap the version 0.7.x base types, with a more simple interface which relies on hiera 
 data for its arguments.  Version 0.8.x also introduces weave::expose_docker_host_to_weave, 
-plus the firewall::(docker|weave) classes, two new defined types: 
+plus the weave::firewall::(docker|weave) classes, two new defined types: 
 weave::firewall::(dnat_published_port|listen_to_peer) plus two new facter facts: 
 $::weave_router_ip_on_docker_bridge and $::docker_hosted_containers, 
 which exposes a json hash of docker container host names => ip_addresses.  
@@ -118,7 +126,7 @@ dependencies must be managed manually.  This module requires:
     * [puppetlabs/firewall](https://forge.puppetlabs.com/puppetlabs/firewall)
 
 The firewall module is intended to support features exposed by weave::firewall:: classes 
-and types.  Until such time as the pull request is accepted into the upstream project, it 
+and types.  Until such time as this patch is accepted into the upstream project, it 
 also requires [being patched as described in this pull request](https://github.com/puppetlabs/puppetlabs-firewall/pull/433).  
 
 ## What weave affects
@@ -132,7 +140,11 @@ purges existing iptables ruleset and invokes docker class to install and daemoni
 `weave::install_weave` --
 installs packages for `ethtool` and `conntrack`
 deploys a pinned version of `/usr/local/bin/weave`
-Read the source for instructions on upgrading the weave script
+Read the source for instructions on manually upgrading the weave script.  
+We continue to wait for the weave project to [tag their project with 
+semantic version numbers](https://github.com/zettio/weave/issues/110) 
+before a future version of this module can [manage up/down grades](../../issues/10) 
+the puppet way.  
 
 `weave::launch` --
 will run `docker pull zettio/weave` to grab the `:latest` docker image
