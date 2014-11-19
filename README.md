@@ -593,7 +593,7 @@ output for `docker inspect`, and its data can be accessed using the same keys as
 using the docker client directly.  If from a command line you would access your required 
 data like so:
 
-    /usr/bin/docker inspect -f '{ .NetworkSettings.IPAddress }'
+    /usr/bin/docker inspect -f '{ .NetworkSettings.IPAddress }' puppet.example.com
 
 Then from inside your manifest that same ip address assigned to the container's docker0 interface 
 can be accessed like so:
