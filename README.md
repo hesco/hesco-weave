@@ -558,7 +558,7 @@ Of the following arguments, all are required except for public_ip, which default
 '0.0.0.0', to listen on all IP's, all interfaces.  
 
     weave::firewall::dnat_published_port { 'dnat puppet.example.com':
-        container_ip =>  $::docker_hosted_containers['puppet.example.com'],
+        container_ip =>  $::docker_hosted_containers['puppet.example.com']['NetworkSettings']['IPAddress'],
       published_port => '8140',
             protocol => 'tcp',
            public_ip => 'your.public.ip.addr',
@@ -586,13 +586,21 @@ and might be useful to the module consumer for accessing the router logs.
 
 ## $::docker_hosted_containers
 
-This returns a json hash of hostname => ip pairs for the containers hosted on a docker host 
-associated with the dokcer0 bridge routable IP's assigned to them by docker.  Use it like so:
+This returns a hash with the keys: docker_host, container_ids, container_count and for each 
+hosted container, its hostname or docker0 IP address as a key related to that container's 
+`docker inspect` output as its value.  This fact exposes to your puppet manifests the entire 
+output for `docker inspect`, and its data can be accessed using the same keys as one would 
+using the docker client directly.  If from a command line you would access your required 
+data like so:
 
-    $ip =  $::docker_hosted_containers['puppet.example.com']
+    /usr/bin/docker inspect -f '{ .NetworkSettings.IPAddress }'
 
-This fact is a candidate for easy extension.  In the future it could easily be extended to expose 
-to puppet anything discernable about a docker container using `docker inspect`.  
+Then from inside your manifest that same ip address assigned to the container's docker0 interface 
+can be accessed like so:
+
+    $::docker_hosted_containers['puppet.example.com']['NetworkSettings']['IPAddress']
+
+and in fact, that is exactly how it is used to NAT the container in the firewall.  
 
 # REFERENCE
 
