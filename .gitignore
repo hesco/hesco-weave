@@ -1,4 +1,5 @@
 
 pkg/
 pkg/*
+files/root/lib/sh/purge_*
 

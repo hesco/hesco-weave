@@ -99,7 +99,7 @@ data for its arguments.  Version 0.8.x also introduces weave::expose_docker_host
 plus the weave::firewall::(docker|weave) classes, two new defined types: 
 weave::firewall::(dnat_published_port|listen_to_peer) plus two new facter facts: 
 $::weave_router_ip_on_docker_bridge and $::docker_hosted_containers, 
-which exposes a json hash of docker container host names => ip_addresses.  
+which exposes a json hash of `docker inspect <container>` output.
 
 # INSTALLATION
 

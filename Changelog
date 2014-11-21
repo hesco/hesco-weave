@@ -1,6 +1,68 @@
 
-Expose containers on a weave network as Facter::facts on the docker host
-https://github.com/hesco/hesco-weave/issues/4
+v0.8-0-d1320c6 -- 20141121
+
+	v0.8.x resolves these issues:
+
+	weave::firewall::* should manage firewall otherwise created by docker/weave; 
+	open port 6783 for peered docker hosts
+	https://github.com/hesco/hesco-weave/issues/1
+
+	Expose containers on a weave network as Facter::facts on the docker host
+	https://github.com/hesco/hesco-weave/issues/4
+
+	Provide new weave::simple::(run::interface) defined types as wrappers 
+	around weave::(run::interface) to handle hiera data munging/validation?
+	https://github.com/hesco/hesco-weave/issues/6
+
+	* dc15e56 make release used to update version to v0.7.50
+	* 4b2317b Fix documentation bug
+	* 57ec895 make release used to update version to v0.7.48
+	* a3323df Refactor docker_hosted_containers fact, expose entire docker inspect output
+	* 9439ca2 update comments on the state of the weave project and this module
+	* 7bae5cb make release used to update version to v0.7.45
+	* 0fe65a7 rm #2, #8 from v0.8.x roadmap
+	* ae09f6c Document ::listen_to_peers, Notify[no firewall rules required for self]
+	* c70db38 Weave::Firewall::Listen_to_peer[]/Notify[no firewall rules required for self]
+	* a7a120d further clean up of README.md documentation
+	* fc1be24 update installation instructions
+	* f5ff0c6 make release used to update version to v0.7.39
+	* 203aeec further clean up of README.md, clarify and complete documentation, fix links
+	* 8b6de7a Resolve #1: provide new weave::firewall::* classes/types, managed puppet way
+	* 783125a refactor weave::install to better manage weave's dependency on docker
+	* 25aa108 Fix internal links in table of contents
+	* 8e46cf9 WIP: Exclude local IP from peers array for weave::launch
+	* 1edd0ee make release used to update version to v0.7.33
+	* 211dd72 Resolve #6: Provide new weave::simple::(run::interface) defined types
+	* 57fcf29 First pass on README.md, document weave::simple::*, weave::firewall::*, facts
+	* 94fcf74 Begin to outline new weave::simple::* and weave::firewall::* features in README.md
+	* 1073577 debug weave::firewall::(docker|weave), now matches output of docker/weave managed firewall
+	* bdba772 quiet debug notification in weave::simple::run
+	* f9a1dc2 weave::firewall::listen_to_peer debugged: firewall's proto(col) attribute fails to handle array
+	* aa128af $public_ip now defaults to undef for weave::firewall::dnat_published_port
+	* c9ca641 resolve multiple minor bugs in refactor for successful catalogue compilation
+	* 440f5d6 make release used to update version to v0.7.24
+	* a0c68df Resolve #4: custom fact returning json hash of 'hostname => docker_bridge_ip' pairs
+	* b9959ab account for ports published to specific public ip
+	* 9edc546 migrated from ymd_docker internal module
+	* 5b69478 make release used to update version to v0.7.20
+	* 12fbeb7 Confirmed nat table: '00100 DOCKER chain, route LOCAL non-loopback traffic to DOCKER'
+	* 6febac0 First iteration on weave::firewall::dnat_published_port defined type, untested
+	* 0596d35 make release used to update version to v0.7.17
+	* 0c9cb53 Add weave::simple::(run|interface), validate hiera data for weave::(run|interface) types
+	* 88d8a4b Document the weave::firewall::* classes pending nature, invite testers
+	* 35cd5ed Adds weave::firewall::(docker|weave|listen_to_peer), testing pending
+	* aececb6 weave::launch now conditionally manages firewall, testing still required
+	* 6a40e34 make weave script executable
+	* 0f2e8e1 weave reset for Exec[docker_rm_weave_container_for_ensure_(absent|purged)]
+	* 81a9dd5 Exec[reset_weave] now notifies Exec[weave_launch], debug unless => attributes
+	* 9122172 a $peer is a destination, not source, on OUTPUT chain; cruft removal
+	* 0b6339c upgrade weave script to: a88bb68447, 2014-10-28
+	* 12e5269 Merge branch 'master' of https://github.com/hesco/hesco-weave
+	* 5cc6659 new weave::manage_firewall option set in hiera data
+	* 1189e58 no longer `include firewall` module here.
+	* c775cd3 Acknowledge additional outstanding issues (#8, #9, #10) in README.md
+	* 5084494 implements `facter -p weave_router_ip_on_docker_bridge`
+	* 56508d5 make release used to update version to v0.7.2
 
 	I have messed with the public history by fixing tags 
 	which failed to comply with semver.org standards:
