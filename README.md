@@ -639,39 +639,36 @@ items might belong there.  Lets see if working together we can turn this into so
 
 ## To-Do tasks for hesco-weave 
 
-### On the roadmap for the 0.8.x release
-
-RESOLVED: [hesco-weave #1](../../issues/1), FEATURE -- weave::firewall::\* 
-
-RESOLVED: [hesco-weave #4](../../issues/4), FEATURE -- $::docker_hosted_containers fact.
-
-RESOLVED: [hesco-weave #6](../../issues/6), FEATURE -- weave::simple::(run|interface) wrapper types.
-
-### Features planned for future releases
+### On the roadmap for the 0.9.x release
 
 [hesco-weave #2](../../issues/2) I want to permit the `weave::docker_cluster_peers` 
 key to accept either a space delimited string or a yaml array, and have it do the 
 right thing either way.
 
-[hesco-weave #8](../../issues/8): BUG: Exclude local IP from peers array for weave::launch
-While not a fatal error, it does provide for noisy logs.  
-
 [hesco-weave #3](../../issues/3), I want to add some additional custom 
 `Facter::facts` to expose the containers and network hosted on the weave 
 bridge or a particular docker host.
 
-[hesco-weave #5](../../issues/5) An additional `weave::migrate` type is required 
-to facilitate migrating a docker container from one docker host to another, while 
-preserving its network connectivity.
+[hesco-weave #8](../../issues/8): BUG: Exclude local IP from peers array for weave::launch
+While not a fatal error, it does provide for noisy logs.  
 
 [hesco-weave #9](../../issues/9): new class needed to provide version check
 weave::init ought to include a weave::version_check class, before the ::install class 
 is invoked which will query for new versions of zettio/weave and of the hesco-weave 
 modules and Notify[] the puppet agent of the opportunity to upgrade either or both modules.   
 
+### Features planned for future releases
+
+[hesco-weave #5](../../issues/5) An additional `weave::migrate` type is required 
+to facilitate migrating a docker container from one docker host to another, while 
+preserving its network connectivity.
+
 [hesco-weave #10](../../issues/10): extend weave::install to support ensure => latest
 Once upstream zettio/weave project provides for semantic versioning, we should be able to 
 `ensure => latest` without performing backflips to sort out which git hash version ID to install.  
+
+[hesco-weave #11](../../issues/11): enable use of WEAVE_DOCKER_ARGS for weave::launch 
+defined type, to permit setting memory limit on weave router, or other run options.  
 
 ## To-Do tasks for other projects
 
