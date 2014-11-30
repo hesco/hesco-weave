@@ -641,6 +641,9 @@ items might belong there.  Lets see if working together we can turn this into so
 
 ### On the roadmap for the 0.9.x release
 
+RESOLVED: [hesco-weave #14](../../issues/14): BUG: weave::install_docker/Exec['purge_firewall_rules'] 
+requires installed docker to install docker
+
 [hesco-weave #2](../../issues/2) I want to permit the `weave::docker_cluster_peers` 
 key to accept either a space delimited string or a yaml array, and have it do the 
 right thing either way.
@@ -669,6 +672,12 @@ Once upstream zettio/weave project provides for semantic versioning, we should b
 
 [hesco-weave #11](../../issues/11): enable use of WEAVE_DOCKER_ARGS for weave::launch 
 defined type, to permit setting memory limit on weave router, or other run options.  
+
+[hesco-weave #12](../../issues/12): Investigate weave launch-dns and what it requires 
+of the puppet module
+
+[hesco-weave #13](../../issues/13): extend weave::simple::run, invoke 
+weave::firewall::dnat_published_port for each published port in hiera
 
 ## To-Do tasks for other projects
 
