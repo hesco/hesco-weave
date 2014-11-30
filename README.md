@@ -39,7 +39,7 @@
 9. [Development - Guide for contributing to the module](#development)
 10. [To-Do](#to-do)
     * [To-Do tasks for hesco-weave](#to-do-tasks-for-hesco-weave)
-        * [Roadmap for version 0.8.x release](#on-the-roadmap-for-the-08x-release)
+        * [Roadmap for version 0.8.x release](#on-the-roadmap-for-the-09x-release)
         * [Features slated for future releases](#features-planned-for-future-releases)
     * [To-Do tasks for other projects](#to-do-tasks-for-other-projects)
 11. [Copyright and License](#copyright-and-license)
