@@ -31,7 +31,7 @@ class weave::install_docker (
 
   exec { 'purge_firewall_rules':
     command => '/root/lib/sh/flush_iptable_rules.sh',
-     unless => '/usr/bin/docker version | /bin/grep -q "Server version:"',
+     unless => '/usr/bin/test -x /usr/bin/docker && /usr/bin/docker version | /bin/grep -q "Server version:"',
      before => Class['docker'],
   }
 
