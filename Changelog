@@ -1,4 +1,19 @@
 
+v0.8.6 -- 20141203
+
+	v0.8.3 resolves this show stopping bug:
+
+	hesco-weave #14: BUG: weave::install_docker/Exec['purge_firewall_rules'] 
+	requires installed docker to install docker
+
+	* be74d83 Update changelog, tag v0.8.6, fix link in README
+	* 6f96716 Fix README.md menu link
+	* 84fae3a Complete TO-DO list, account for unreported resolved bug
+	* ce70238 Beginning to outline v0.9.x roadmap
+	* 4c81a6c Resolve #14: unless => '/usr/bin/test -x /usr/bin/docker && . . . '
+	* c75202b make release used to update version to v0.8.1
+	* c0a23e3 Document changes for v0.8.x in Changelog, bug fix in README
+
 v0.8-0-d1320c6 -- 20141121
 
 	v0.8.x resolves these issues:
