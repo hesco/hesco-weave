@@ -1,6 +1,6 @@
 
 name 'hesco-weave'
-version '0.8.7.3'
+version '0.8.11'
 author 'Hugh Esco <hesco@yourmessagedelivered.com>'
 summary 'puppet module for deploying and managing a docker network with weave'
 description 'Longer description of the module including an example'
