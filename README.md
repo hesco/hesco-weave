@@ -644,13 +644,13 @@ items might belong there.  Lets see if working together we can turn this into so
 RESOLVED: [hesco-weave #14](../../issues/14): BUG: weave::install_docker/Exec['purge_firewall_rules'] 
 requires installed docker to install docker
 
+RESOLVED: [hesco-weave #3](../../issues/3), I want to add some additional custom 
+`Facter::facts` to expose the containers and network hosted on the weave 
+bridge or a particular docker host.
+
 [hesco-weave #2](../../issues/2) I want to permit the `weave::docker_cluster_peers` 
 key to accept either a space delimited string or a yaml array, and have it do the 
 right thing either way.
-
-[hesco-weave #3](../../issues/3), I want to add some additional custom 
-`Facter::facts` to expose the containers and network hosted on the weave 
-bridge or a particular docker host.
 
 [hesco-weave #8](../../issues/8): BUG: Exclude local IP from peers array for weave::launch
 While not a fatal error, it does provide for noisy logs.  
