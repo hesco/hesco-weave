@@ -648,12 +648,12 @@ RESOLVED: [hesco-weave #3](../../issues/3), I want to add some additional custom
 `Facter::facts` to expose the containers and network hosted on the weave 
 bridge or a particular docker host.
 
+RESOLVED: [hesco-weave #8](../../issues/8): BUG: Exclude local IP from peers array for weave::launch
+While not a fatal error, it does provide for noisy logs.  
+
 [hesco-weave #2](../../issues/2) I want to permit the `weave::docker_cluster_peers` 
 key to accept either a space delimited string or a yaml array, and have it do the 
 right thing either way.
-
-[hesco-weave #8](../../issues/8): BUG: Exclude local IP from peers array for weave::launch
-While not a fatal error, it does provide for noisy logs.  
 
 [hesco-weave #9](../../issues/9): new class needed to provide version check
 weave::init ought to include a weave::version_check class, before the ::install class 
