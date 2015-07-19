@@ -43,7 +43,7 @@ define weave::simple::interface ( $host_name, $ensure ) {
   validate_re( $ensure, [ '^present$', '^absent$' ] )
 
   $dhcp = hiera('dockerhosts_dhcp')
-  $ip = $dhcp["$host_name"]['ip']
+  $ip = $dhcp["$::hostname"]['ip']
   $ip_test = regsubst( $ip, '^(.*)/(.*)$', '\1' )
   $ip_cidr_test = regsubst( $ip, '^(.*)/(.*)$', '\2' )
   if ! is_ip_address( $ip_test ) {
